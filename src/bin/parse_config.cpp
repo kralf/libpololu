@@ -20,18 +20,25 @@
 
 #include <sstream>
 
-#include "configuration.h"
+#include "config/document.h"
+
+using namespace Pololu;
 
 int main(int argc, char **argv) {
   if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " FILENAME" << std::endl;
+    std::cerr << "Usage: " << argv[0] << " FILENAME [SECTION]" << std::endl;
     return -1;
   }
 
-  std::cout << "Parsing configuration file " << argv[1] << std::endl;
-  FireCAMConfiguration configuration(argv[1]);
+  std::cout << "Parsing configuration file " << argv[1] << "..." << std::endl;
+  Configuration::Document document;
 
-  configuration.save(std::cout);
+  document.load(argv[1]);
+
+  if (argc == 3)
+    std::cout << const_cast<const Configuration::Document&>(document)(argv[2]);
+  else
+    std::cout << document;
 
   return 0;
 }

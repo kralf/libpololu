@@ -18,13 +18,29 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "utils.h"
+#include "object.h"
 
 /*****************************************************************************/
-/* Methods                                                                   */
+/* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-void FireCAMUtils::assert(const char* message, dc1394error_t err) {
-  if (err != DC1394_SUCCESS)
-    FireCAMUtils:error(message, dc1394_error_get_string(err));
+Pololu::Object::DestructionError::DestructionError() :
+  Exception("Destructor called for referenced object") {
+}
+
+Pololu::Object::Object() :
+  numReferences(0) {
+}
+
+Pololu::Object::~Object() {
+  if (numReferences)
+    throw DestructionError();
+}
+
+/*****************************************************************************/
+/* Accessors                                                                 */
+/*****************************************************************************/
+
+size_t Pololu::Object::getNumReferences() const {
+  return numReferences;
 }

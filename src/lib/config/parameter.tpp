@@ -24,7 +24,8 @@
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-template <typename T> Configuration::Parameter::Parameter(const T& value) {
+template <typename T> Pololu::Configuration::Parameter::Parameter(
+    const T& value) {
   setValue(value);
 }
 
@@ -32,18 +33,18 @@ template <typename T> Configuration::Parameter::Parameter(const T& value) {
 /* Accessors                                                                 */
 /*****************************************************************************/
 
-template <typename T> T Configuration::Parameter::getValue() const {
+template <typename T> T Pololu::Configuration::Parameter::getValue() const {
   std::istringstream stream(this->value);
   T value;
 
-  if (!(stream >> value))
-    error("Bad value conversion", this->value);
-  else
+  if (stream >> value)
     return value;
+  else
+    throw ConversionError(this->value);
 }
 
-template <typename T> void Configuration::Parameter::setValue(const T&
-    value) {
+template <typename T> void Pololu::Configuration::Parameter::setValue(
+    const T& value) {
   std::ostringstream stream;
 
   stream << value;
@@ -54,11 +55,11 @@ template <typename T> void Configuration::Parameter::setValue(const T&
 /* Methods                                                                   */
 /*****************************************************************************/
 
-template <typename T> Configuration::Parameter&
-    Configuration::Parameter::operator=(const T& value) {
+template <typename T> Pololu::Configuration::Parameter&
+    Pololu::Configuration::Parameter::operator=(const T& value) {
   setValue(value);
 }
 
-template <typename T> Configuration::Parameter::operator T() const {
+template <typename T> Pololu::Configuration::Parameter::operator T() const {
   return getValue();
 }

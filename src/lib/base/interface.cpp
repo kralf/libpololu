@@ -18,74 +18,66 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <fstream>
-
-#include <libxml++/libxml++.h>
-
-#include "configuration.h"
-
-#include "config.h"
-#include "utils/utils.h"
+#include "interface.h"
 
 /*****************************************************************************/
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-PololuConfiguration::PololuConfiguration(const char* filename) {
-  if (filename)
-    load(filename);
+Pololu::Interface::ConnectionError::ConnectionError(const std::string&
+    address) :
+  Exception("Error connecting to %s", address.c_str()) {
 }
 
-PololuConfiguration::PololuConfiguration(const PololuConfiguration& src) :
-  PololuSection(src) {
+Pololu::Interface::ReadError::ReadError(const std::string& address) :
+  Exception("Error reading from %s", address.c_str()) {
 }
 
-PololuConfiguration::~PololuConfiguration() {
+Pololu::Interface::WriteError::WriteError(const std::string& address) :
+  Exception("Error writing to %s", address.c_str()) {
+}
+
+Pololu::Interface::Interface(const std::string& address) :
+  address(address) {
+}
+
+Pololu::Interface::Interface(const Interface& src) :
+  address(src.address) {
+}
+
+Pololu::Interface::~Interface() {
+}
+
+/*****************************************************************************/
+/* Accessors                                                                 */
+/*****************************************************************************/
+
+const std::string& Pololu::Interface::getAddress() const {
+  return address;
 }
 
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
 
-PololuConfiguration& PololuConfiguration::operator=(const
-    PololuConfiguration& src) {
-  PololuSection::operator=(src);
+Pololu::Interface& Pololu::Interface::operator=(const Interface& src) {
+  if (isConnected())
+    disconnect();
+
+  address = src.address;
+
+  if (src.isConnected())
+    connect();
+
   return *this;
 }
 
-void PololuConfiguration::load(const char* filename) {
-  std::ifstream file(filename);
-
-  if (!file.is_open())
-    PololuUtils::error("Error opening configuration file for reading",
-      filename);
-  else
-    load(file);
+void Pololu::Interface::write(std::ostream& stream) const {
+  stream << getAddress();
 }
 
-void PololuConfiguration::load(std::istream& stream) {
-  xmlpp::DomParser parser;
-
-  parser.parse_stream(stream);
-
-  xmlpp::Document* document = parser.get_document();
-}
-
-void PololuConfiguration::save(const char* filename) const {
-  std::ofstream file(filename);
-
-  if (!file.is_open())
-    PololuUtils::error("Error opening configuration file for writing",
-      filename);
-  else
-    save(file);
-}
-
-void PololuConfiguration::save(std::ostream& stream) const {
-  xmlpp::Document document;
-
-  document.add_comment("Format: "PROJECT_NAME" configuration file (version "
-    PROJECT_VERSION")");
-
-  document.write_to_stream(stream);
+std::ostream& operator<<(std::ostream& stream, const Pololu::Interface&
+    interface) {
+  interface.write(stream);
+  return stream;
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Ralf Kaestner and Luciano Spinello              *
+ *   Copyright (C) 2004 by Ralf Kaestner                                   *
  *   ralf.kaestner@gmail.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,78 +18,45 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <sstream>
-
-#include <libusb.h>
-
-#include "error.h"
-
 /*****************************************************************************/
 /* Statics                                                                   */
 /*****************************************************************************/
 
-const USB::Error::Strings USB::Error::strings;
+template <class C>
+C*& Pololu::Singleton<C>::instance() {
+  static C* instance = 0;
+  return instance;
+}
 
 /*****************************************************************************/
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-USB::Error::Strings::Strings() {
-  (*this)[LIBUSB_SUCCESS] = "Success.";
-  (*this)[LIBUSB_ERROR_IO] = "Input/output error.";
-  (*this)[LIBUSB_ERROR_INVALID_PARAM] = "Invalid parameter.";
-  (*this)[LIBUSB_ERROR_ACCESS] = "Access denied.";
-  (*this)[LIBUSB_ERROR_NO_DEVICE] = "No such device.";
-  (*this)[LIBUSB_ERROR_NOT_FOUND] = "Entity not found.";
-  (*this)[LIBUSB_ERROR_BUSY] = "Resource busy.";
-  (*this)[LIBUSB_ERROR_TIMEOUT] = "Operation timed out.";
-  (*this)[LIBUSB_ERROR_OVERFLOW] = "Overflow.";
-  (*this)[LIBUSB_ERROR_PIPE] = "Pipe error.";
-  (*this)[LIBUSB_ERROR_INTERRUPTED] = "System call interrupted.";
-  (*this)[LIBUSB_ERROR_NO_MEM] = "Insufficient memory.";
-  (*this)[LIBUSB_ERROR_NOT_SUPPORTED] = "Operation not supported.";
-  (*this)[LIBUSB_ERROR_OTHER] = "Other error.";
+template <class C>
+Pololu::Singleton<C>::Singleton() {
 }
 
-USB::Error::Error(const std::string& what, int error) :
-  error(error) {
-  std::ostringstream stream;
-  stream << what << ": ";
-
-  std::map<int, std::string>::const_iterator it = strings.find(error);
-  if (it == strings.end())
-    stream << "Unknown error. (" << error << ")";
-  else
-    stream << it->second;
-
-  description = stream.str();
+template <class C>
+Pololu::Singleton<C>::~Singleton() {
 }
 
-USB::Error::Error(const USB::Error& src) :
-  error(src.error),
-  description(src.description) {
-}
+/*****************************************************************************/
+/* Accessors                                                                 */
+/*****************************************************************************/
 
-USB::Error::~Error() throw() {
+template <class C>
+C& Pololu::Singleton<C>::getInstance() {
+  if (!instance())
+    instance() = new C();
+
+  return *instance();
 }
 
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
 
-USB::Error& USB::Error::operator=(const USB::Error& src) {
-  error = src.error;
-  description = src.description;
-
-  return *this;
-}
-
-void USB::Error::assert(const std::string& what, int error) {
-  if (error)
-    throw USB::Error(what, error);
-}
-
-
-const char* USB::Error::what() const throw() {
-  return description.c_str();
+template <class C>
+bool Pololu::Singleton<C>::exists() {
+  return instance();
 }

@@ -18,63 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef POLOLU_UTILS_H
-#define POLOLU_UTILS_H
+#ifndef POLOLU_H
+#define POLOLU_H
 
-/** \file utils.h
-  * \brief Pololu utility functions
+/** \file pololu.h
+  * \brief Pololu convenience functions
   */
 
-#include <sstream>
-#include <stdexcept>
-#include <vector>
-#include <map>
+#include <list>
 
-class PololuUtils {
-public:
-  /** Types and non-static subclasses
-    */
-  class ErrorPresets : public std::map<int, std::string> {
-  public:
-    /** Constructors
-      */
-    ErrorPresets();
-  };
+#include "base/context.h"
+#include "base/interface.h"
+#include "base/device.h"
 
-  /** Driver library error assertion
+namespace Pololu {
+  /** Create a communication context of the specified type
     */
-  static void assert(const char* description, int err);
+  Pointer<Context> createContext(const std::string& typeName);
 
-  /** Templated error handling using runtime exceptions
+  /** Create a Pololu device of the specified type
     */
-  template <typename T> static void error(const char* message, const T& value);
+  Pointer<Device> createDevice(const std::string& typeName);
 
-  /** Templated string to value conversions
+  /** Discover all Pololu devices in all available contexts
     */
-  template <typename T> static T convert(const std::string& string);
-
-  /** Templated string to vector conversions
-    */
-  template <typename T> static void convert(const std::string& string,
-    std::vector<T>& values);
-  template <typename T> static std::string convert(const std::vector<T>&
-    values);
-
-  /** Templated string to enumeratable conversions
-    */
-  template <typename T> static T convert(const std::string& string,
-    const std::map<T, std::string>& strings);
-
-  /** Templated enumeratable conversions
-    */
-  template <typename T, typename U> static U convert(const T& t,
-    const std::map<T, U>& presets);
-  template <typename T, typename U> static T convert(const U& u,
-    const std::map<T, U>& presets);
-protected:
-  static ErrorPresets errors;
+  std::list<Pointer<Device> > discoverDevices();
 };
-
-#include "utils/utils.tpp"
 
 #endif

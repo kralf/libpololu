@@ -25,90 +25,123 @@
   * \brief Pololu configuration section
   */
 
+#include <iostream>
 #include <map>
 
 #include "config/parameter.h"
+
+#include "base/exception.h"
 
 namespace xmlpp {
   class Document;
   class Element;
 };
 
-namespace Configuration {
-  class Section {
-  public:
-    /** Construct a configuration section
-      */
-    Section(const std::string& name = "");
-    Section(const Section& src);
+namespace Pololu {
+  namespace Configuration {
+    class Section :
+      public Pololu::Object {
+    public:
+      /** Types and non-static subclasses
+        */
+      class FormatError :
+        public Exception {
+      public:
+        /** Construct a section format error
+          */
+        FormatError();
+      };
 
-    /** Destroy a configuration section
-      */
-    virtual ~Section();
+      class SectionError :
+        public Exception {
+      public:
+        /** Construct a section error
+          */
+        SectionError(const std::string& name);
+      };
 
-    /** Access the name of the section
-      */
-    const std::string& getName() const;
+      class ParameterError :
+        public Exception {
+      public:
+        /** Construct a parameter error
+          */
+        ParameterError(const std::string& name);
+      };
 
-    /** Access the subsection with the specified name
-      */
-    Section& getSection(const std::string& locator);
-    const Section& getSection(const std::string& locator) const;
+      /** Construct a Pololu configuration section
+        */
+      Section(const std::string& name = "");
+      Section(const Section& src);
 
-    Section& operator()(const std::string& locator);
-    const Section& operator()(const std::string& locator) const;
+      /** Destroy a Pololu configuration section
+        */
+      virtual ~Section();
 
-    /** Access the parameter with the specified name
-      */
-    Parameter& getParameter(const std::string& locator);
-    const Parameter& getParameter(const std::string& locator) const;
+      /** Access the name of the section
+        */
+      const std::string& getName() const;
 
-    Parameter& operator[](const std::string& locator);
-    const Parameter& operator[](const std::string& locator) const;
+      /** Access the subsection at the specified location
+        */
+      Section& getSection(const std::string& location);
+      const Section& getSection(const std::string& location) const;
 
-    /** Configuration section assignments
-      */
-    Section& operator=(const Section& src);
+      Section& operator()(const std::string& location);
+      const Section& operator()(const std::string& location) const;
 
-    /** Read the configuration section from the given stream
-      */
-    void read(std::istream& stream);
+      /** Access the parameter at the specified location
+        */
+      Parameter& getParameter(const std::string& location);
+      const Parameter& getParameter(const std::string& location) const;
 
-    /** Write the configuration section to the given stream
-      */
-    void write(std::ostream& stream) const;
+      Parameter& operator[](const std::string& location);
+      const Parameter& operator[](const std::string& location) const;
 
-    /** Configuration section manipulations
-      */
-    Section& removeSection(const std::string& name);
-    Section& removeParameter(const std::string& name);
+      /** Pololu configuration section assignments
+        */
+      Section& operator=(const Section& src);
 
-    /** Configuration section queries
-      */
-    bool hasSection(const std::string& name) const;
-    bool hasParameter(const std::string& name) const;
+      /** Read the configuration section from the given stream
+        */
+      void read(std::istream& stream);
 
-    /** Clear the configuration section
-      */
-    virtual Section& clear();
-  protected:
-    std::string name;
+      /** Write the configuration section to the given stream
+        */
+      void write(std::ostream& stream) const;
 
-    std::map<std::string, Section> sections;
-    std::map<std::string, Parameter> parameters;
+      /** Pololu configuration section manipulations
+        */
+      Section& removeSection(const std::string& name);
+      Section& removeParameter(const std::string& name);
 
-    /** Pololu configuration section conversions
-      */
-    virtual void fromDocument(const xmlpp::Document& document);
-    virtual void toDocument(xmlpp::Document& document) const;
+      /** Pololu configuration section queries
+        */
+      bool hasSection(const std::string& name) const;
+      bool hasParameter(const std::string& name) const;
 
-    virtual void fromElement(const xmlpp::Element& element);
-    virtual void toElement(xmlpp::Element& element) const;
+      /** Clear the configuration section
+        */
+      virtual Section& clear();
+    protected:
+      std::string name;
+
+      std::map<std::string, Section> sections;
+      std::map<std::string, Parameter> parameters;
+
+      /** Pololu configuration section conversions
+        */
+      virtual void fromXML(const xmlpp::Document& document);
+      virtual void fromXML(const xmlpp::Element& element);
+
+      virtual void toXML(xmlpp::Element& element) const;
+      virtual void toXML(xmlpp::Document& document) const;
+    };
   };
 };
 
-std::istream& operator>>(std::istream& stream, Configuration::Section& section);
-std::ostream& operator<<(std::ostream& stream, const Configuration::Section&
-  section);
+std::istream& operator>>(std::istream& stream,
+  Pololu::Configuration::Section& section);
+std::ostream& operator<<(std::ostream& stream, const
+  Pololu::Configuration::Section& section);
 
 #endif

@@ -20,6 +20,12 @@ remake_doc(
 )
 
 remake_pack_deb(
+  libusb libxml++-2.6
+)
+remake_pack_deb(
+  COMPONENT utils
+  DESCRIPTION "utilities"
+  libpololu
 )
 remake_pack_deb(
   COMPONENT dev
@@ -29,4 +35,12 @@ remake_pack_deb(
   ARCH all
   COMPONENT doc
   DESCRIPTION "documentation"
+)
+
+remake_distribute_deb(
+  DISTRIBUTION lucid
+  SECTION libs
+  UPLOAD ppa:kralf/asl
+  DEPENDS remake libusb-dev libxml++2.6-dev doxygen
+  PASS CMAKE_BUILD_TYPE LIBPOLOLU_SUBVERSION_REVISION
 )

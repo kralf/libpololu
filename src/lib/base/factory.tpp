@@ -18,55 +18,82 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <libusb.h>
-
-#include "base/singleton.h"
-
-#include "error.h"
-
 /*****************************************************************************/
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-Pololu::USB::Error::Descriptions::Descriptions() {
-  (*this)[LIBUSB_SUCCESS] = "Success.";
-  (*this)[LIBUSB_ERROR_IO] = "Input/output error.";
-  (*this)[LIBUSB_ERROR_INVALID_PARAM] = "Invalid parameter.";
-  (*this)[LIBUSB_ERROR_ACCESS] = "Access denied.";
-  (*this)[LIBUSB_ERROR_NO_DEVICE] = "No such device.";
-  (*this)[LIBUSB_ERROR_NOT_FOUND] = "Entity not found.";
-  (*this)[LIBUSB_ERROR_BUSY] = "Resource busy.";
-  (*this)[LIBUSB_ERROR_TIMEOUT] = "Operation timed out.";
-  (*this)[LIBUSB_ERROR_OVERFLOW] = "Overflow.";
-  (*this)[LIBUSB_ERROR_PIPE] = "Pipe error.";
-  (*this)[LIBUSB_ERROR_INTERRUPTED] = "System call interrupted.";
-  (*this)[LIBUSB_ERROR_NO_MEM] = "Insufficient memory.";
-  (*this)[LIBUSB_ERROR_NOT_SUPPORTED] = "Operation not supported.";
-  (*this)[LIBUSB_ERROR_OTHER] = "Other error.";
+template <class C>
+Pololu::Factory<C>::TypeError::TypeError(const std::string& typeName) :
+  Exception("Bad prototype: %s", typeName.c_str()) {
 }
 
-Pololu::USB::Error::Error(int error) :
-  Exception("USB error: %s",
-    Singleton<Descriptions>::getInstance()[error].c_str()) {
+template <class C>
+Pololu::Factory<C>::Factory() {
+}
+
+template <class C>
+Pololu::Factory<C>::~Factory() {
+  clear();
 }
 
 /*****************************************************************************/
 /* Accessors                                                                 */
 /*****************************************************************************/
 
-std::string Pololu::USB::Error::Descriptions::operator[](int error) const {
-  const_iterator it = find(error);
-  if (it != end())
-    return it->second;
+template <class C>
+const std::map<std::string, Pololu::Pointer<C> >&  
+    Pololu::Factory<C>::getPrototypes() const {
+  return prototypes;
+}
+
+template <class C>
+const C& Pololu::Factory<C>::getPrototype(const std::string& typeName)
+    const {
+  typename std::map<std::string, Pointer<C> >::const_iterator
+    it = prototypes.find(typeName);
+
+  if (it != prototypes.end())
+    return *(it->second);
   else
-    return "Unkown error.";
+    throw TypeError(typeName);
 }
 
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
 
-void Pololu::USB::Error::assert(int error) {
-  if (error != LIBUSB_SUCCESS)
-    throw Error(error);
+template <class C>
+Pololu::Pointer<C> Pololu::Factory<C>::create(const std::string& typeName)
+    const {
+  return getPrototype(typeName).clone();
+}
+
+template <class C>
+void Pololu::Factory<C>::registerPrototype(const std::string& typeName,
+    const Pointer<C>& prototype) {
+  if (prototypes.find(typeName) == prototypes.end())
+    prototypes.insert(std::make_pair(typeName, prototype));
+  else
+    throw TypeError(typeName);
+}
+
+template <class C>
+void Pololu::Factory<C>::unregisterPrototype(const std::string& typeName) {
+  typename std::map<std::string, Pointer<C> >::iterator
+    it = prototypes.find(typeName);
+
+  if (it != prototypes.end())
+    prototypes.erase(it);
+  else
+    throw TypeError(typeName);
+}
+
+template <class C>
+void Pololu::Factory<C>::clear() {
+  prototypes.clear();
+}
+
+template <class C>
+bool Pololu::Factory<C>::isRegistered(const std::string& typeName) const {
+  return prototypes.find(typeName) != prototypes.end();
 }

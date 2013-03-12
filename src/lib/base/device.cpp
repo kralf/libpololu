@@ -18,86 +18,66 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <iomanip>
-
-#include <libusb.h>
-
 #include "device.h"
-
-#include "utils/utils.h"
-
-/*****************************************************************************/
-/* Statics                                                                   */
-/*****************************************************************************/
-
-const PololuDevice::SpeedStrings PololuDevice::speedStrings;
 
 /*****************************************************************************/
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-PololuDevice::SpeedStrings::SpeedStrings() {
-  (*this)[unknown] = "unknown";
-  (*this)[low] = "low";
-  (*this)[full] = "full";
-  (*this)[high] = "high";
-  (*this)[super] = "super";
+Pololu::Device::Device(size_t vendorId, size_t productId) :
+  vendorId(vendorId),
+  productId(productId) {
 }
 
-PololuDevice::PololuDevice() :
-  device(0) {
+Pololu::Device::Device(const Device& src) :
+  vendorId(src.vendorId),
+  productId(src.productId),
+  interface(src.interface) {
 }
 
-PololuDevice::PololuDevice(const PololuDevice& src) :
-  device(src.device) {
-  if (device)
-    libusb_ref_device(device);
-}
-
-PololuDevice::~PololuDevice() {
-  if (device)
-    libusb_unref_device(device);
+Pololu::Device::~Device() {
 }
 
 /*****************************************************************************/
 /* Accessors                                                                 */
 /*****************************************************************************/
 
-size_t PololuDevice::getBus() const {
-  return libusb_get_bus_number(device);
+size_t Pololu::Device::getVendorId() const {
+  return vendorId;
 }
 
-size_t PololuDevice::getAddress() const {
-  return libusb_get_device_address(device);
+size_t Pololu::Device::getProductId() const {
+  return productId;
 }
 
-PololuDevice::Speed PololuDevice::getSpeed() const {
-  return unknown;
+void Pololu::Device::setInterface(const Pointer<Interface>& interface) {
+  this->interface = interface;
+}
+
+const Pololu::Pointer<Pololu::Interface>& Pololu::Device::getInterface()
+    const {
+  return interface;
 }
 
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
 
-PololuDevice& PololuDevice::operator=(const PololuDevice& src) {
-  if (device)
-    libusb_unref_device(device);
+Pololu::Device& Pololu::Device::operator=(const Pololu::Device& src) {
+  vendorId = src.vendorId;
+  productId = src.productId;
 
-  device = src.device;
-
-  if (device)
-    libusb_ref_device(device);
+  interface = src.interface;
 
   return *this;
 }
 
-void PololuDevice::write(std::ostream& stream) const {
-  stream << "(bus " << getBus() << ", address " << getAddress() << ") ";
-  stream << "at " << PololuUtils::convert(getSpeed(), speedStrings) <<
-    " speed";
+void Pololu::Device::write(std::ostream& stream) const {
+  stream << getFullName();
 }
 
-std::ostream& operator<<(std::ostream& stream, const PololuDevice& device) {
+std::ostream& operator<<(std::ostream& stream, const Pololu::Device&
+    device) {
   device.write(stream);
   return stream;
 }

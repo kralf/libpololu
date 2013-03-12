@@ -18,57 +18,71 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef POLOLU_CONFIG_SETTINGS_H
-#define POLOLU_CONFIG_SETTINGS_H
+#ifndef POLOLU_FACTORY_H
+#define POLOLU_FACTORY_H
 
-/** \file settings.h
-  * \brief Pololu settings class
+/** \file factory.h
+  * \brief Templated Pololu factory
   */
 
-#include <iostream>
+#include <map>
 
-#include "config/section.h"
+#include "base/pointer.h"
+#include "base/exception.h"
 
-namespace Configuration {
-  class Settings :
-    public Section {
+namespace Pololu {
+  template <class C> class Factory {
   public:
-    /** Construct a settings object
+    /** Types and non-static subclasses
       */
-    Settings(const std::string& name = "", const std::string&
-      version = "1");
-    Settings(const Settings& src);
+    class TypeError :
+      public Exception {
+    public:
+      /** Construct a factory type error
+        */
+      TypeError(const std::string& typeName);
+    };
 
-    /** Destroy a settings object
+    /** Construct a Pololu factory
       */
-    virtual ~Settings();
+    Factory();
 
-    /** Access the version of the settings
+    /** Destroy a Pololu factory
       */
-    const std::string& getVersion() const;
-    void setVersion(const std::string& version);
+    virtual ~Factory();
 
-    /** Configuration assignments
+    /** Access all registered prototypes
       */
-    Settings& operator=(const Settings& src);
-
-    /** Load the settings from the file with the specified filename
+    const std::map<std::string, Pointer<C> >& getPrototypes() const;
+    /** Access the prototype of the specified type
       */
-    void load(const std::string& filename);
+    const C& getPrototype(const std::string& typeName) const;
 
-    /** Save the settings to the file with the specified filename
+    /** Create an instance of the specified type
       */
-    void save(const std::string& filename) const;
+    Pointer<C> create(const std::string& typeName) const;
 
-    Settings& clear();
+    /** Register a prototype
+      */
+    void registerPrototype(const std::string& typeName, const
+      Pointer<C>& prototype);
+
+    /** Unregister a prototype
+      */
+    void unregisterPrototype(const std::string& typeName);
+
+    /** Clear the Pololu factory
+      */
+    void clear();
+
+    /** Pololu factory queries
+      */
+    bool isRegistered(const std::string& typeName) const;
   protected:
-    std::string version;
-
-    void toDocument(xmlpp::Document& document) const;
-
-    void fromElement(const xmlpp::Element& element);
-    void toElement(xmlpp::Element& element) const;
+    std::map<std::string, Pointer<C> > prototypes;
   };
 };
+
+#include "base/factory.tpp"
 
 #endif

@@ -18,54 +18,56 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef POLOLU_USB_ERROR_H
-#define POLOLU_USB_ERROR_H
+#ifndef POLOLU_CONTEXT_H
+#define POLOLU_CONTEXT_H
 
-/** \file error.h
-  * \brief Pololu USB error
+/** \file context.h
+  * \brief Abstract Pololu communication context
   */
 
-#include <stdexcept>
-#include <map>
-#include <string>
+#include <list>
 
-namespace USB {
-  class Error :
-    public std::exception {
+#include "base/object.h"
+#include "base/exception.h"
+#include "base/pointer.h"
+#include "base/interface.h"
+#include "base/device.h"
+
+namespace Pololu {
+  class Context :
+    public Object {
   public:
     /** Types and non-static subclasses
       */
-    class Strings : public std::map<int, std::string> {
+    class AddressError :
+      public Exception {
     public:
-      /** Constructors
+      /** Construct a Pololu context address error
         */
-      Strings();
+      AddressError(const std::string& address);
     };
 
-    /** Construct a USB error
+    /** Construct a Pololu context
       */
-    Error(const std::string& what, int error);
-    Error(const Error& src);
+    Context();
 
-    /** Destroy a USB error
+    /** Destroy a Pololu context
       */
-    virtual ~Error() throw();
+    virtual ~Context();
 
-    /** USB error assignments
+    /** Access the Pololu interface corresponding to the specified
+      * address within the Pololu context
       */
-    Error& operator=(const Error& src);
+    virtual Pointer<Interface> getInterface(const std::string&
+      address) const = 0;
 
-    /** USB error assertion
+    /** Clone the Pololu context
       */
-    static void assert(const std::string& what, int error);
+    virtual Pointer<Context> clone() const = 0;
 
-    const char* what() const throw();
-  protected:
-    static const Strings strings;
-
-    int error;
-
-    std::string description;
+    /** Discover all Pololu devices in the context
+      */
+    virtual std::list<Pointer<Device> > discoverDevices() const = 0;
   };
 };
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011 by Ralf Kaestner                                   *
+ *   Copyright (C) 2010 by Ralf Kaestner and Luciano Spinello              *
  *   ralf.kaestner@gmail.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,27 +18,48 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#include <cstdarg>
+#include <cstdio>
 
-#define PROJECT_NAME "${REMAKE_PROJECT_NAME}"
-#define PROJECT_MAJOR ${REMAKE_PROJECT_MAJOR}
-#define PROJECT_MINOR ${REMAKE_PROJECT_MINOR}
-#define PROJECT_PATCH ${REMAKE_PROJECT_PATCH}
-#define PROJECT_REVISION ${REMAKE_PROJECT_REVISION}
-#define PROJECT_RELEASE "${REMAKE_PROJECT_RELEASE}"
-#define PROJECT_VERSION "${REMAKE_PROJECT_VERSION}"
+#include "exception.h"
 
-#define PROJECT_SUMMARY "${REMAKE_PROJECT_SUMMARY}"
-#define PROJECT_AUTHOR "${REMAKE_PROJECT_ADMIN}"
-#define PROJECT_CONTACT "${REMAKE_PROJECT_CONTACT}"
-#define PROJECT_HOME "${REMAKE_PROJECT_HOME}"
+/*****************************************************************************/
+/* Constructors and Destructor                                               */
+/*****************************************************************************/
 
-#define PROJECT_LICENSE "${REMAKE_PROJECT_LICENSE}"
-#define PROJECT_LICENSE_TEXT "${REMAKE_PROJECT_LICENSE_TEXT}"
+Pololu::Exception::Exception() {
+}
 
-#define PROJECT_BUILD_SYSTEM "${REMAKE_PROJECT_BUILD_SYSTEM}"
-#define PROJECT_BUILD_ARCH "${REMAKE_PROJECT_BUILD_ARCH}"
-#define PROJECT_BUILD_TYPE "${REMAKE_PROJECT_BUILD_TYPE}"
+Pololu::Exception::Exception(const std::string& format, ...) {
+  char description[1024];
+  va_list arguments;
 
-#endif
+  va_start(arguments, format);
+  vsprintf(description, format.c_str(), arguments);
+  va_end(arguments);
+
+  this->description = description;
+}
+
+Pololu::Exception::Exception(const Exception& src) :
+  description(src.description) {
+}
+
+Pololu::Exception::~Exception() throw() {
+}
+
+/*****************************************************************************/
+/* Methods                                                                   */
+/*****************************************************************************/
+
+Pololu::Exception& Pololu::Exception::operator=(const Exception& src) {
+  description = src.description;
+  return *this;
+}
+
+const char* Pololu::Exception::what() const throw() {
+  if (!description.empty())
+    return description.c_str();
+  else
+    return "Unknown error";
+}

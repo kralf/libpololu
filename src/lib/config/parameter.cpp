@@ -24,25 +24,30 @@
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-Configuration::Parameter::Parameter() {
+Pololu::Configuration::Parameter::ConversionError::ConversionError(
+    const std::string& value) :
+  Exception("Error converting parameter value: %s", value.c_str()) {
 }
 
-Configuration::Parameter::Parameter(const Configuration::Parameter& src) :
+Pololu::Configuration::Parameter::Parameter() {
+}
+
+Pololu::Configuration::Parameter::Parameter(const Parameter& src) :
   value(src.value) {
 }
 
-Configuration::Parameter::~Parameter() {
+Pololu::Configuration::Parameter::~Parameter() {
 }
 
 /*****************************************************************************/
 /* Accessors                                                                 */
 /*****************************************************************************/
 
-const std::string& Configuration::Parameter::getValue() const {
+const std::string& Pololu::Configuration::Parameter::getValue() const {
   return value;
 }
 
-void Configuration::Parameter::setValue(const std::string& value) {
+void Pololu::Configuration::Parameter::setValue(const std::string& value) {
   this->value = value;
 }
 
@@ -50,28 +55,28 @@ void Configuration::Parameter::setValue(const std::string& value) {
 /* Methods                                                                   */
 /*****************************************************************************/
 
-Configuration::Parameter& Configuration::Parameter::operator=(const
-    Configuration::Parameter& src) {
+Pololu::Configuration::Parameter&
+  Pololu::Configuration::Parameter::operator=(const Parameter& src) {
   value = src.value;
   return *this;
 }
 
-void Configuration::Parameter::read(std::istream& stream) {
+void Pololu::Configuration::Parameter::read(std::istream& stream) {
   stream >> value;
 }
 
-void Configuration::Parameter::write(std::ostream& stream) const {
+void Pololu::Configuration::Parameter::write(std::ostream& stream) const {
   stream << value;
 }
 
-std::istream& operator>>(std::istream& stream, Configuration::Parameter&
-    parameter) {
+std::istream& operator>>(std::istream& stream,
+    Pololu::Configuration::Parameter& parameter) {
   parameter.read(stream);
   return stream;
 }
 
-std::ostream& operator<<(std::ostream& stream, const Configuration::Parameter&
-    parameter) {
+std::ostream& operator<<(std::ostream& stream, const
+    Pololu::Configuration::Parameter& parameter) {
   parameter.write(stream);
   return stream;
 }

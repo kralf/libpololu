@@ -26,140 +26,154 @@
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-Configuration::Section::Section(const std::string& name) :
+Pololu::Configuration::Section::FormatError::FormatError() :
+  Exception("Invalid configuration document format") {
+}
+
+Pololu::Configuration::Section::SectionError::SectionError(const
+    std::string& name) :
+  Exception("Invalid configuration section: %s", name.c_str()) {
+}
+
+Pololu::Configuration::Section::ParameterError::ParameterError(const
+    std::string& name) :
+  Exception("Invalid configuration parameter: %s", name.c_str()) {
+}
+
+Pololu::Configuration::Section::Section(const std::string& name) :
   name(name) {
 }
 
-Configuration::Section::Section(const Configuration::Section&
-src) :
+Pololu::Configuration::Section::Section(const Section& src) :
   name(src.name),
   sections(src.sections),
   parameters(src.parameters) {
 }
 
-Configuration::Section::~Section() {
+Pololu::Configuration::Section::~Section() {
 }
 
 /*****************************************************************************/
 /* Accessors                                                                 */
 /*****************************************************************************/
 
-const std::string& Configuration::Section::getName() const {
+const std::string& Pololu::Configuration::Section::getName() const {
   return name;
 }
 
-Configuration::Section& Configuration::Section::getSection(const std::string&
-    locator) {
-  std::string name = locator, sublocator;
+Pololu::Configuration::Section& Pololu::Configuration::Section::getSection(
+    const std::string& location) {
+  std::string name = location, sublocation;
 
-  int i = locator.find("/");
+  int i = location.find("/");
   if (i >= 0) {
-    name = locator.substr(0, i);
-    sublocator = locator.substr(i+1);
+    name = location.substr(0, i);
+    sublocation = location.substr(i+1);
   }
 
-  std::map<std::string, Configuration::Section>::iterator
-    it = sections.find(name);
+  std::map<std::string, Section>::iterator it = sections.find(name);
 
-  if (it == sections.end()) {
-    Configuration::Section section(name);
-    it = sections.insert(std::make_pair(name, section)).first;
-  }
+  if (it == sections.end())
+    it = sections.insert(std::make_pair(name, name)).first;
 
-  if (sublocator.empty())
+  if (sublocation.empty())
     return it->second;
   else
-    return it->second(sublocator);
+    return it->second(sublocation);
 }
 
-const Configuration::Section& Configuration::Section::getSection(const
-    std::string& locator) const {
-  std::string name = locator, sublocator;
+const Pololu::Configuration::Section&
+    Pololu::Configuration::Section::getSection(const std::string& location)
+    const {
+  std::string name = location, sublocation;
 
-  int i = locator.find("/");
+  int i = location.find("/");
   if (i >= 0) {
-    name = locator.substr(0, i);
-    sublocator = locator.substr(i+1);
+    name = location.substr(0, i);
+    sublocation = location.substr(i+1);
   }
 
-  std::map<std::string, Configuration::Section>::const_iterator
-    it = sections.find(name);
+  std::map<std::string, Section>::const_iterator it = sections.find(name);
 
   if (it != sections.end()) {
-    if (sublocator.empty())
+    if (sublocation.empty())
       return it->second;
     else
-      return it->second(sublocator);
+      return it->second(sublocation);
   }
   else
-    PololuUtils::error("Bad configuration section", name);
+    throw SectionError(name);
 }
 
-Configuration::Section& Configuration::Section::operator()(const std::string&
-    locator) {
-  return getSection(locator);
+Pololu::Configuration::Section& Pololu::Configuration::Section::operator()(
+    const std::string& location) {
+  return getSection(location);
 }
 
-const Configuration::Section& Configuration::Section::operator()(const
-    std::string& locator) const {
-  return getSection(locator);
+const Pololu::Configuration::Section&
+    Pololu::Configuration::Section::operator()(const std::string& location)
+    const {
+  return getSection(location);
 }
 
-Configuration::Parameter& Configuration::Section::getParameter(const
-    std::string& locator) {
-  std::string name = locator, sublocator;
+Pololu::Configuration::Parameter&
+    Pololu::Configuration::Section::getParameter(const std::string&
+    location) {
+  std::string name = location, sublocation;
 
-  int i = locator.find("/");
+  int i = location.find("/");
   if (i >= 0) {
-    name = locator.substr(0, i);
-    sublocator = locator.substr(i+1);
+    name = location.substr(0, i);
+    sublocation = location.substr(i+1);
   }
 
-  if (sublocator.empty())
+  if (sublocation.empty())
     return parameters[name];
   else
-    return (*this)(name)[sublocator];
+    return (*this)(name)[sublocation];
 }
 
-const Configuration::Parameter& Configuration::Section::getParameter(const
-    std::string& locator) const {
-  std::string name = locator, sublocator;
+const Pololu::Configuration::Parameter&
+    Pololu::Configuration::Section::getParameter(const std::string& location)
+    const {
+  std::string name = location, sublocation;
 
-  int i = locator.find("/");
+  int i = location.find("/");
   if (i >= 0) {
-    name = locator.substr(0, i);
-    sublocator = locator.substr(i+1);
+    name = location.substr(0, i);
+    sublocation = location.substr(i+1);
   }
 
-  if (sublocator.empty()) {
-    std::map<std::string, Configuration::Parameter>::const_iterator
-      it = parameters.find(locator);
+  if (sublocation.empty()) {
+    std::map<std::string, Parameter>::const_iterator
+      it = parameters.find(name);
 
     if (it != parameters.end())
       return it->second;
     else
-      PololuUtils::error("Bad configuration parameter", locator);
+      throw ParameterError(name);
   }
   else
-    return (*this)(name)[sublocator];
+    return (*this)(name)[sublocation];
 }
 
-Configuration::Parameter& Configuration::Section::operator[](const
-    std::string& locator) {
-  return getParameter(locator);
+Pololu::Configuration::Parameter& Pololu::Configuration::Section::operator[](
+    const std::string& location) {
+  return getParameter(location);
 }
 
-const Configuration::Parameter& Configuration::Section::operator[](const
-    std::string& locator) const {
-  return getParameter(locator);
+const Pololu::Configuration::Parameter&
+    Pololu::Configuration::Section::operator[](const std::string& location)
+    const {
+  return getParameter(location);
 }
 
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
 
-Configuration::Section& Configuration::Section::operator=(const
-    Configuration::Section& src) {
+Pololu::Configuration::Section& Pololu::Configuration::Section::operator=(
+    const Section& src) {
   name = src.name;
   
   sections = src.sections;
@@ -168,7 +182,7 @@ Configuration::Section& Configuration::Section::operator=(const
   return *this;
 }
 
-Configuration::Section& Configuration::Section::clear() {
+Pololu::Configuration::Section& Pololu::Configuration::Section::clear() {
   name.clear();
 
   sections.clear();
@@ -177,7 +191,7 @@ Configuration::Section& Configuration::Section::clear() {
   return *this;
 }
 
-void Configuration::Section::read(std::istream& stream) {
+void Pololu::Configuration::Section::read(std::istream& stream) {
   xmlpp::DomParser parser;
 
   clear();
@@ -186,63 +200,60 @@ void Configuration::Section::read(std::istream& stream) {
   xmlpp::Document* document = parser.get_document();
 
   if (document)
-    fromDocument(*document);
+    fromXML(*document);
   else
-    PololuUtils::error("Read error", "Invalid XML document");
+    throw FormatError();
 }
 
-void Configuration::Section::write(std::ostream& stream) const {
+void Pololu::Configuration::Section::write(std::ostream& stream) const {
   xmlpp::Document document;
 
-  toDocument(document);
+  toXML(document);
   document.write_to_stream_formatted(stream);
 }
 
-Configuration::Section& Configuration::Section::removeSection(const
-    std::string& name) {
-  std::map<std::string, Configuration::Section>::iterator it =
-sections.find(name);
+Pololu::Configuration::Section& Pololu::Configuration::Section::removeSection(
+    const std::string& name) {
+  std::map<std::string, Section>::iterator it = sections.find(name);
 
   if (it != sections.end())
     sections.erase(it);
   else
-    PololuUtils::error("Bad configuration section", name);
+    throw SectionError(name);
 }
 
-Configuration::Section& Configuration::Section::removeParameter(const
-    std::string& name) {
-  std::map<std::string, Configuration::Parameter>::iterator
-    it = parameters.find(name);
+Pololu::Configuration::Section&
+    Pololu::Configuration::Section::removeParameter(const std::string&
+    name) {
+  std::map<std::string, Parameter>::iterator it = parameters.find(name);
 
   if (it != parameters.end())
     parameters.erase(it);
   else
-    PololuUtils::error("Bad configuration parameter", name);
+    throw ParameterError(name);
 }
 
-bool Configuration::Section::hasSection(const std::string& name) const {
+bool Pololu::Configuration::Section::hasSection(const std::string& name)
+    const {
   return sections.find(name) != sections.end();
 }
 
-bool Configuration::Section::hasParameter(const std::string& name) const {
+bool Pololu::Configuration::Section::hasParameter(const std::string& name)
+    const {
   return parameters.find(name) != parameters.end();
 }
 
-void Configuration::Section::fromDocument(const xmlpp::Document& document) {
+void Pololu::Configuration::Section::fromXML(const xmlpp::Document&
+    document) {
   xmlpp::Element* root = document.get_root_node();
 
   if (root)
-    fromElement(*root);
+    fromXML(*root);
   else
-    PololuUtils::error("Read error", "Missing XML root node");
+    throw FormatError();
 }
 
-void Configuration::Section::toDocument(xmlpp::Document& document) const {
-  xmlpp::Element* root = document.create_root_node(name);
-  toElement(*root);
-}
-
-void Configuration::Section::fromElement(const xmlpp::Element& element) {
+void Pololu::Configuration::Section::fromXML(const xmlpp::Element& element) {
   name = element.get_name();
 
   xmlpp::Element::AttributeList attributes = element.get_attributes();
@@ -259,16 +270,21 @@ void Configuration::Section::fromElement(const xmlpp::Element& element) {
     const xmlpp::TextNode* text = child->get_child_text();
 
     if (!text || text->is_white_space())
-      (*this)(child->get_name()).fromElement(*child);
+      (*this)(child->get_name()).fromXML(*child);
     else
       (*this)[child->get_name()] = text->get_content();
   }
 }
 
-void Configuration::Section::toElement(xmlpp::Element& element) const {
+void Pololu::Configuration::Section::toXML(xmlpp::Document& document) const {
+  xmlpp::Element* root = document.create_root_node(name);
+  toXML(*root);
+}
+
+void Pololu::Configuration::Section::toXML(xmlpp::Element& element) const {
   element.set_name(name);
 
-  for (std::map<std::string, Configuration::Parameter>::const_iterator
+  for (std::map<std::string, Parameter>::const_iterator
       it = parameters.begin(); it != parameters.end(); ++it) {
     if (parameters.size() > 2)
       element.add_child(it->first)->add_child_text(it->second.getValue());
@@ -276,19 +292,19 @@ void Configuration::Section::toElement(xmlpp::Element& element) const {
       element.set_attribute(it->first, it->second);
   }
 
-  for (std::map<std::string, Configuration::Section>::const_iterator
+  for (std::map<std::string, Section>::const_iterator
       it = sections.begin(); it != sections.end(); ++it)
-    it->second.toElement(*element.add_child(it->first));
+    it->second.toXML(*element.add_child(it->first));
 }
 
-std::istream& operator>>(std::istream& stream, Configuration::Section&
-    section) {
+std::istream& operator>>(std::istream& stream,
+    Pololu::Configuration::Section& section) {
   section.read(stream);
   return stream;
 }
 
-std::ostream& operator<<(std::ostream& stream, const Configuration::Section&
-    section) {
+std::ostream& operator<<(std::ostream& stream, const
+    Pololu::Configuration::Section& section) {
   section.write(stream);
   return stream;
 }

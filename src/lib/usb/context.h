@@ -18,60 +18,81 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef POLOLU_CONTEXT_H
-#define POLOLU_CONTEXT_H
+#ifndef POLOLU_USB_CONTEXT_H
+#define POLOLU_USB_CONTEXT_H
 
 /** \file context.h
   * \brief Pololu USB context
   */
 
-#include <list>
+#include "base/context.h"
+#include "base/prototype.h"
+#include "base/singleton.h"
 
-#include "usb/device.h"
+#include "usb/interface.h"
 
 struct libusb_context;
 
-class PololuContext {
-public:
-  /** Types and non-static subclasses
-    */
-  enum DebugLevel {
-    minimal = 0,
-    error = 1,
-    warning = 2,
-    verbose = 3
+namespace Pololu {
+  namespace USB {
+    class Context :
+      public Pololu::Context {
+    public:
+      /** Types and non-static subclasses
+        */
+      enum DebugLevel {
+        minimal = 0,
+        error = 1,
+        warning = 2,
+        verbose = 3
+      };
+
+      class DebugLevels :
+        public std::map<DebugLevel, std::string> {
+      public:
+        /** Construct a debug levels object
+          */
+        DebugLevels();
+      };
+
+      /** Construct a Pololu USB context
+        */
+      Context(DebugLevel debugLevel = minimal);
+      Context(const Context& src);
+
+      /** Destroy a Pololu USB context
+        */
+      virtual ~Context();
+
+      /** Access the debug level of the Pololu USB context
+        */
+      void setDebugLevel(DebugLevel debugLevel);
+      DebugLevel getDebugLevel() const;
+
+      /** Access all available USB interfaces within the Pololu USB context
+        */
+      std::list<Interface> getInterfaces() const;
+
+      Pointer<Pololu::Interface> getInterface(const std::string&
+        address) const;
+
+      /** Pololu USB context assignments
+        */
+      Context& operator=(const Context& src);
+
+      /** Clone the Pololu USB context
+        */
+      Pointer<Pololu::Context> clone() const;
+
+      std::list<Pointer<Device> > discoverDevices() const;
+    protected:
+      DebugLevel debugLevel;
+    private:
+      libusb_context* context;
+
+      static Prototype<Pololu::Context> prototype;
+    };
   };
-
-  class DebugLevelStrings :
-    public std::map<DebugLevel, std::string> {
-  public:
-    /** Construct a debug level string object
-      */
-    DebugLevelStrings();
-  };
-
-  /** Construct a USB context
-    */
-  PololuContext(DebugLevel debugLevel = minimal);
-
-  /** Destroy a USB context
-    */
-  virtual ~PololuContext();
-
-  /** Access the debug level of the USB context
-    */
-  void setDebugLevel(DebugLevel debugLevel);
-  DebugLevel getDebugLevel() const;
-
-  /** Access the devices of the USB context
-    */
-  std::list<PololuDevice> getDevices() const;
-
-  static const DebugLevelStrings debugLevelStrings;
-protected:
-  libusb_context* context;
-
-  DebugLevel debugLevel;
 };
 
 #endif

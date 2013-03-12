@@ -22,7 +22,7 @@
 
 #include <libxml++/libxml++.h>
 
-#include "settings.h"
+#include "document.h"
 
 #include "config.h"
 
@@ -30,29 +30,34 @@
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-Configuration::Settings::Settings(const std::string& name, const std::string&
-    version) :
-  Configuration::Section(name),
+Pololu::Configuration::Document::FileError::FileError(const std::string&
+    filename) :
+  Exception("Configuration file error: %s", filename.c_str()) {
+}
+
+Pololu::Configuration::Document::Document(const std::string& name, const
+    std::string& version) :
+  Section(name),
   version(version) {
 }
 
-Configuration::Settings::Settings(const Configuration::Settings& src) :
-  Configuration::Section(src),
+Pololu::Configuration::Document::Document(const Document& src) :
+  Section(src),
   version(src.version) {
 }
 
-Configuration::Settings::~Settings() {
+Pololu::Configuration::Document::~Document() {
 }
 
 /*****************************************************************************/
 /* Accessors                                                                 */
 /*****************************************************************************/
 
-const std::string& Configuration::Settings::getVersion() const {
+const std::string& Pololu::Configuration::Document::getVersion() const {
   return version;
 }
 
-void Configuration::Settings::setVersion(const std::string& version) {
+void Pololu::Configuration::Document::setVersion(const std::string& version) {
   this->version = version;
 }
 
@@ -60,49 +65,42 @@ void Configuration::Settings::setVersion(const std::string& version) {
 /* Methods                                                                   */
 /*****************************************************************************/
 
-Configuration::Settings& Configuration::Settings::operator=(const
-    Configuration::Settings& src) {
+Pololu::Configuration::Document& Pololu::Configuration::Document::operator=(
+    const Document& src) {
   version = src.version;
-  Configuration::Section::operator=(src);
+  Section::operator=(src);
 
   return *this;
 }
 
-void Configuration::Settings::load(const std::string& filename) {
+void Pololu::Configuration::Document::load(const std::string& filename) {
   std::ifstream file(filename.c_str());
 
-  if (!file.is_open())
-    PololuUtils::error("Error opening configuration file for reading",
-      filename);
-  else
+  if (file.is_open())
     read(file);
+  else
+    throw FileError(filename);
 }
 
-void Configuration::Settings::save(const std::string& filename) const {
+void Pololu::Configuration::Document::save(const std::string& filename)
+    const {
   std::ofstream file(filename.c_str());
 
-  if (!file.is_open())
-    PololuUtils::error("Error opening configuration file for writing",
-      filename);
-  else
+  if (file.is_open())
     write(file);
+  else
+    throw FileError(filename);
 }
 
-Configuration::Settings& Configuration::Settings::clear() {
-  Configuration::Section::clear();
+Pololu::Configuration::Document& Pololu::Configuration::Document::clear() {
+  Pololu::Configuration::Section::clear();
   version.clear();
 
   return *this;
 }
 
-void Configuration::Settings::toDocument(xmlpp::Document& document) const {
-  document.add_comment("Document format: "PROJECT_NAME
-    " configuration file (version "PROJECT_VERSION")");
-  Configuration::Section::toDocument(document);
-}
-
-void Configuration::Settings::fromElement(const xmlpp::Element& element) {
-  Configuration::Section::fromElement(element);
+void Pololu::Configuration::Document::fromXML(const xmlpp::Element& element) {
+  Section::fromXML(element);
 
   if (hasParameter("version")) {
     version = (*this)["version"].getValue();
@@ -110,7 +108,14 @@ void Configuration::Settings::fromElement(const xmlpp::Element& element) {
   }
 }
 
-void Configuration::Settings::toElement(xmlpp::Element& element) const {
+void Pololu::Configuration::Document::toXML(xmlpp::Document& document) const {
+  document.add_comment("Document format: "PROJECT_NAME
+    " configuration file (version "PROJECT_VERSION")");
+
+  Section::toXML(document);
+}
+
+void Pololu::Configuration::Document::toXML(xmlpp::Element& element) const {
   element.set_attribute("version", version);
-  Configuration::Section::toElement(element);
+  Section::toXML(element);
 }

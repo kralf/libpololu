@@ -18,45 +18,71 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef POLOLU_USB_ERROR_H
-#define POLOLU_USB_ERROR_H
+#ifndef POLOLU_CONFIG_DOCUMENT_H
+#define POLOLU_CONFIG_DOCUMENT_H
 
-/** \file error.h
-  * \brief Pololu USB error
+/** \file document.h
+  * \brief Pololu configuration document class
   */
 
-#include <map>
+#include "config/section.h"
 
 #include "base/exception.h"
-#include "base/singleton.h"
 
 namespace Pololu {
-  namespace USB {
-    class Error :
-      public Exception {
+  namespace Configuration {
+    class Document :
+      public Section {
     public:
       /** Types and non-static subclasses
         */
-      class Descriptions :
-        public std::map<int, std::string> {
+      class FileError :
+        public Exception {
       public:
-        /** Construct a Pololu USB error descriptions object
+        /** Construct a document file error
           */
-        Descriptions();
-
-        /** Access the USB error description for the specified error
-          */
-        std::string operator[](int error) const;
-        using std::map<int, std::string>::operator[];
+        FileError(const std::string& filename);
       };
 
-      /** Construct a Pololu USB error
+      /** Construct a Pololu configuration document object
         */
-      Error(int error);
+      Document(const std::string& name = "", const std::string&
+        version = "1");
+      Document(const Document& src);
 
-      /** Pololu USB error assertion
+      /** Destroy a Pololu configuration document object
         */
-      static void assert(int error);
+      virtual ~Document();
+
+      /** Access the version of the configuration document
+        */
+      const std::string& getVersion() const;
+      void setVersion(const std::string& version);
+
+      /** Pololu configuration document assignments
+        */
+      Document& operator=(const Document& src);
+
+      /** Load the configuration document from the file with the specified
+        * filename
+        */
+      void load(const std::string& filename);
+
+      /** Save the configuration document to the file with the specified
+        * filename
+        */
+      void save(const std::string& filename) const;
+
+      Document& clear();
+    protected:
+      std::string version;
+
+      /** Pololu configuration document conversions
+        */
+      void fromXML(const xmlpp::Element& element);
+
+      void toXML(xmlpp::Document& document) const;
+      void toXML(xmlpp::Element& element) const;
     };
   };
 };

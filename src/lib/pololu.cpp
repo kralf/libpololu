@@ -18,49 +18,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <libusb-1.0/libusb.h>
+#include "pololu.h"
 
-#include "utils.h"
-
-/*****************************************************************************/
-/* Statics                                                                   */
-/*****************************************************************************/
-
-PololuUtils::ErrorPresets PololuUtils::errors;
-
-/*****************************************************************************/
-/* Constructors and Destructor                                               */
-/*****************************************************************************/
-
-PololuUtils::ErrorPresets::ErrorPresets() {
-  (*this)[LIBUSB_SUCCESS] = "Success (no error)";
-  (*this)[LIBUSB_ERROR_IO] = "Input/output error.";
-  (*this)[LIBUSB_ERROR_INVALID_PARAM] = "Invalid parameter.";
-  (*this)[LIBUSB_ERROR_ACCESS] = "Access denied (insufficient permissions)";
-  (*this)[LIBUSB_ERROR_NO_DEVICE] =
-    "No such device (it may have been disconnected)";
-  (*this)[LIBUSB_ERROR_NOT_FOUND] = "Entity not found.";
-  (*this)[LIBUSB_ERROR_BUSY] = "Resource busy.";
-  (*this)[LIBUSB_ERROR_TIMEOUT] = "Operation timed out.";
-  (*this)[LIBUSB_ERROR_OVERFLOW] = "Overflow.";
-  (*this)[LIBUSB_ERROR_PIPE] = "Pipe error.";
-  (*this)[LIBUSB_ERROR_INTERRUPTED] =
-    "System call interrupted (perhaps due to signal)";
-  (*this)[LIBUSB_ERROR_NO_MEM] = "Insufficient memory.";
-  (*this)[LIBUSB_ERROR_NOT_SUPPORTED] =
-    "Operation not supported or unimplemented on this platform.";
-  (*this)[LIBUSB_ERROR_OTHER] = "Other error.";
-}
+#include "base/singleton.h"
+#include "base/factory.h"
 
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
 
-void PololuUtils::assert(const char* message, int err) {
-  if (err)
-#if LIBUSB_1_0_MINOR == 0 && LIBUSB_1_0_PATCH < 9
-    PololuUtils:error(message, errors[err].c_str());
-#else
-    PololuUtils:error(message, libusb_error_name(error));
-#endif
+Pololu::Pointer<Pololu::Context> Pololu::createContext(const std::string&
+    typeName) {
+  return Singleton<Factory<Context> >::getInstance().create(typeName);
+}
+
+Pololu::Pointer<Pololu::Device> Pololu::createDevice(const std::string&
+    typeName) {
+  return Singleton<Factory<Device> >::getInstance().create(typeName);
+}
+
+std::list<Pololu::Pointer<Pololu::Device> > Pololu::discoverDevices() {
+  std::list<Pointer<Device> > devices;
+
+  const std::map<std::string, Pointer<Context> >&
+    contexts = Singleton<Factory<Context> >::getInstance().getPrototypes();
+  for (std::map<std::string, Pointer<Context> >::const_iterator
+      it = contexts.begin(); it != contexts.end(); ++it) {
+    std::list<Pointer<Device> > discovered = it->second->discoverDevices();
+    devices.insert(devices.end(), discovered.begin(), discovered.end());
+  }
+
+  return devices;
 }

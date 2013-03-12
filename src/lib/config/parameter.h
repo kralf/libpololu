@@ -25,53 +25,70 @@
   * \brief Pololu configuration parameter
   */
 
+#include <iostream>
 #include <string>
 
-namespace Configuration {
-  class Parameter {
-  public:
-    /** Construct a configuration parameter
-      */
-    Parameter();
-    template <typename T> Parameter(const T& value);
-    Parameter(const Parameter& src);
+#include "base/object.h"
+#include "base/exception.h"
 
-    /** Destroy a configuration parameter
-      */
-    virtual ~Parameter();
+namespace Pololu {
+  namespace Configuration {
+    class Parameter :
+      public Pololu::Object {
+    public:
+      /** Types and non-static subclasses
+        */
+      class ConversionError :
+        public Exception {
+      public:
+        /** Construct a parameter conversion error
+          */
+        ConversionError(const std::string& value);
+      };
 
-    /** Access the parameter's value
-      */
-    const std::string& getValue() const;
-    template <typename T> T getValue() const;
-    void setValue(const std::string& value);
-    template <typename T> void setValue(const T& value);
+      /** Construct a Pololu configuration parameter
+        */
+      Parameter();
+      template <typename T> Parameter(const T& value);
+      Parameter(const Parameter& src);
 
-    /** Configuration parameter assignments
-      */
-    Parameter& operator=(const Parameter& src);
-    template <typename T> Parameter& operator=(const T& value);
+      /** Destroy a Pololu configuration parameter
+        */
+      virtual ~Parameter();
 
-    /** Read the configuration parameter from the given stream
-      */
-    void read(std::istream& stream);
+      /** Access the parameter's value
+        */
+      const std::string& getValue() const;
+      template <typename T> T getValue() const;
+      void setValue(const std::string& value);
+      template <typename T> void setValue(const T& value);
 
-    /** Write the configuration parameter to the given stream
-      */
-    void write(std::ostream& stream) const;
+      /** Pololu configuration parameter assignments
+        */
+      Parameter& operator=(const Parameter& src);
+      template <typename T> Parameter& operator=(const T& value);
 
-    /** Configuration parameter conversions
-      */
-    template <typename T> operator T() const;
-  protected:
-    std::string value;
+      /** Read the configuration parameter from the given stream
+        */
+      void read(std::istream& stream);
+
+      /** Write the configuration parameter to the given stream
+        */
+      void write(std::ostream& stream) const;
+
+      /** Pololu configuration parameter conversions
+        */
+      template <typename T> operator T() const;
+    protected:
+      std::string value;
+    };
   };
 };
 
-std::istream& operator>>(std::istream& stream, Configuration::Parameter&
-  parameter);
-std::ostream& operator<<(std::ostream& stream, const Configuration::Parameter&
-  parameter);
+std::istream& operator>>(std::istream& stream,
+  Pololu::Configuration::Parameter& parameter);
+std::ostream& operator<<(std::ostream& stream, const
+  Pololu::Configuration::Parameter& parameter);
 
 #include "config/parameter.tpp"
 

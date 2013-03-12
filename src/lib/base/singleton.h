@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011 by Ralf Kaestner                                   *
+ *   Copyright (C) 2004 by Ralf Kaestner                                   *
  *   ralf.kaestner@gmail.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,27 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef POLOLU_SINGLETON_H
+#define POLOLU_SINGLETON_H
 
-#define PROJECT_NAME "${REMAKE_PROJECT_NAME}"
-#define PROJECT_MAJOR ${REMAKE_PROJECT_MAJOR}
-#define PROJECT_MINOR ${REMAKE_PROJECT_MINOR}
-#define PROJECT_PATCH ${REMAKE_PROJECT_PATCH}
-#define PROJECT_REVISION ${REMAKE_PROJECT_REVISION}
-#define PROJECT_RELEASE "${REMAKE_PROJECT_RELEASE}"
-#define PROJECT_VERSION "${REMAKE_PROJECT_VERSION}"
+/** \file singleton.h
+  * \brief Templated Pololu singleton
+  */
 
-#define PROJECT_SUMMARY "${REMAKE_PROJECT_SUMMARY}"
-#define PROJECT_AUTHOR "${REMAKE_PROJECT_ADMIN}"
-#define PROJECT_CONTACT "${REMAKE_PROJECT_CONTACT}"
-#define PROJECT_HOME "${REMAKE_PROJECT_HOME}"
+#include "base/exception.h"
 
-#define PROJECT_LICENSE "${REMAKE_PROJECT_LICENSE}"
-#define PROJECT_LICENSE_TEXT "${REMAKE_PROJECT_LICENSE_TEXT}"
+namespace Pololu {
+  template <class C> class Singleton {
+  public:
+    /** Access the singleton instance
+      */
+    static C& getInstance();
 
-#define PROJECT_BUILD_SYSTEM "${REMAKE_PROJECT_BUILD_SYSTEM}"
-#define PROJECT_BUILD_ARCH "${REMAKE_PROJECT_BUILD_ARCH}"
-#define PROJECT_BUILD_TYPE "${REMAKE_PROJECT_BUILD_TYPE}"
+    /** Pololu singleton queries
+      */
+    static bool exists();
+  private:
+    static C*& instance();
+
+    /** Construct a Pololu singleton
+      */
+    Singleton();
+
+    /** Destroy a Pololu singleton
+      */
+    virtual ~Singleton();
+  };
+};
+
+#include "base/singleton.tpp"
 
 #endif

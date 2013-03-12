@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Ralf Kaestner and Luciano Spinello              *
+ *   Copyright (C) 2004 by Ralf Kaestner                                   *
  *   ralf.kaestner@gmail.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,48 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef POLOLU_CONFIGURATION_H
-#define POLOLU_CONFIGURATION_H
+#ifndef POLOLU_TYPE_H
+#define POLOLU_TYPE_H
 
-/** \file configuration.h
-  * \brief Pololu configuration class
+/** \file type.h
+  * \brief Templated Pololu type
   */
 
-#include <iostream>
+#include <string>
 
-#include "config/section.h"
+namespace Pololu {
+  template <class C> class Type {
+  public:
+    /** Access the name of the Pololu type
+      */
+    static const std::string& getName();
+  protected:
+    /** Construct a Pololu type
+      */
+    Type();
 
-class PololuConfiguration :
-  public PololuSection {
-public:
-  /** Construct a Pololu configuration object
-    */
-  PololuConfiguration(const char* filename = 0);
-  PololuConfiguration(const PololuConfiguration& src);
-
-  /** Destroy a Pololu configuration object
-    */
-  virtual ~PololuConfiguration();
-
-  /** Pololu configuration assignments
-    */
-  PololuConfiguration& operator=(const PololuConfiguration& src);
-
-  /** Load the Pololu configuration from the file with the specified
-    * filename
-    */
-  void load(const char* filename);
-  /** Load the Pololu configuration from the given stream
-    */
-  void load(std::istream& stream);
-
-  /** Save the Pololu configuration to the file with the specified
-    * filename
-    */
-  void save(const char* filename) const;
-  /** Save the Pololu configuration to the given stream
-    */
-  void save(std::ostream& stream) const;
+    /** Destroy a Pololu type
+      */
+    virtual ~Type();
+  };
 };
+
+#include "base/type.tpp"
 
 #endif

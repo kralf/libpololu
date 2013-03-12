@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Ralf Kaestner and Luciano Spinello              *
+ *   Copyright (C) 2004 by Ralf Kaestner                                   *
  *   ralf.kaestner@gmail.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,86 +18,51 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <iomanip>
-
-#include <libusb.h>
-
-#include "device.h"
-
-#include "utils/utils.h"
-
-/*****************************************************************************/
-/* Statics                                                                   */
-/*****************************************************************************/
-
-const PololuDevice::SpeedStrings PololuDevice::speedStrings;
+#include "base/singleton.h"
+#include "base/factory.h"
 
 /*****************************************************************************/
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-PololuDevice::SpeedStrings::SpeedStrings() {
-  (*this)[unknown] = "unknown";
-  (*this)[low] = "low";
-  (*this)[full] = "full";
-  (*this)[high] = "high";
-  (*this)[super] = "super";
+template <class C>
+Pololu::Prototype<C>::Prototype() {
 }
 
-PololuDevice::PololuDevice() :
-  device(0) {
+template <class C>
+template <class D> Pololu::Prototype<C>::Prototype(D* instance, const
+    std::string& typeName) :
+  typeName(typeName),
+  instance(instance) {
+  Singleton<Factory<C> >::getInstance().registerPrototype(
+    this->typeName, this->instance);
 }
 
-PololuDevice::PololuDevice(const PololuDevice& src) :
-  device(src.device) {
-  if (device)
-    libusb_ref_device(device);
+template <class C>
+Pololu::Prototype<C>::Prototype(const Prototype<C>& src) :
+  typeName(src.typeName),
+  instance(src.instance) {
+  src.instance = 0;
 }
 
-PololuDevice::~PololuDevice() {
-  if (device)
-    libusb_unref_device(device);
-}
-
-/*****************************************************************************/
-/* Accessors                                                                 */
-/*****************************************************************************/
-
-size_t PololuDevice::getBus() const {
-  return libusb_get_bus_number(device);
-}
-
-size_t PololuDevice::getAddress() const {
-  return libusb_get_device_address(device);
-}
-
-PololuDevice::Speed PololuDevice::getSpeed() const {
-  return unknown;
+template <class C>
+Pololu::Prototype<C>::~Prototype() {
+  if (!instance.isNull())
+    Singleton<Factory<C> >::getInstance().unregisterPrototype(typeName);
 }
 
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
 
-PololuDevice& PololuDevice::operator=(const PololuDevice& src) {
-  if (device)
-    libusb_unref_device(device);
+template <class C>
+Pololu::Prototype<C>& Pololu::Prototype<C>::operator=(const Prototype<C>&
+    src) {
+  if (!instance.isNull())
+    Singleton<Factory<C> >::getInstance().unregisterPrototype(typeName);
 
-  device = src.device;
-
-  if (device)
-    libusb_ref_device(device);
+  typeName = src.typeName;
+  instance = src.instance;
 
   return *this;
-}
-
-void PololuDevice::write(std::ostream& stream) const {
-  stream << "(bus " << getBus() << ", address " << getAddress() << ") ";
-  stream << "at " << PololuUtils::convert(getSpeed(), speedStrings) <<
-    " speed";
-}
-
-std::ostream& operator<<(std::ostream& stream, const PololuDevice& device) {
-  device.write(stream);
-  return stream;
 }

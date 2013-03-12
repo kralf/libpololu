@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Ralf Kaestner and Luciano Spinello              *
+ *   Copyright (C) 2004 by Ralf Kaestner                                   *
  *   ralf.kaestner@gmail.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,71 +18,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef POLOLU_DEVICE_H
-#define POLOLU_DEVICE_H
+#ifndef POLOLU_PROTOTYPE_H
+#define POLOLU_PROTOTYPE_H
 
-/** \file device.h
-  * \brief Pololu USB device
+/** \file prototype.h
+  * \brief Templated Pololu prototype
   */
 
-#include <map>
-#include <string>
+#include "base/type.h"
+#include "base/pointer.h"
 
-struct libusb_device;
-
-class PololuDevice {
-friend class PololuContext;
-public:
-  /** Types and non-static subclasses
-    */
-  enum Speed {
-    unknown,
-    low,
-    full,
-    high,
-    super,
-  };
-
-  class SpeedStrings :
-    public std::map<Speed, std::string> {
+namespace Pololu {
+  template <class C> class Prototype {
   public:
-    /** Construct a speed string object
+    /** Construct a Pololu prototype
       */
-    SpeedStrings();
+    Prototype();
+    template <class D> Prototype(D* instance, const std::string&
+      typeName = Type<D>::getName());
+    Prototype(const Prototype<C>& src);
+
+    /** Destroy a Pololu prototype
+      */
+    virtual ~Prototype();
+
+    /** Pololu prototype assignments
+      */
+    Prototype<C>& operator=(const Prototype<C>& src);
+  protected:
+    std::string typeName;
+  private:
+    mutable Pointer<C> instance;
   };
-
-  /** Construct a USB device
-    */
-  PololuDevice();
-  PololuDevice(const PololuDevice& src);
-
-  /** Destroy a USB device
-    */
-  virtual ~PololuDevice();
-
-  /** Access the bus number of the device
-    */
-  size_t getBus() const;
-  /** Access the address of the device
-    */
-  size_t getAddress() const;
-  /** Access the speed of the device
-    */
-  Speed getSpeed() const;
-
-  /** USB device assignments
-    */
-  PololuDevice& operator=(const PololuDevice& src);
-
-  /** Write the USB device to the given stream
-    */
-  void write(std::ostream& stream) const;
-
-  static const SpeedStrings speedStrings;
-protected:
-  libusb_device* device;
 };
 
-std::ostream& operator<<(std::ostream& stream, const PololuDevice& device);
+#include "base/prototype.tpp"
 
 #endif

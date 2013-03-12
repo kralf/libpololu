@@ -18,47 +18,74 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef POLOLU_USB_ERROR_H
-#define POLOLU_USB_ERROR_H
+#ifndef POLOLU_DEVICE_H
+#define POLOLU_DEVICE_H
 
-/** \file error.h
-  * \brief Pololu USB error
+/** \file device.h
+  * \brief Abstract Pololu device
   */
 
-#include <map>
+#include <iostream>
 
-#include "base/exception.h"
-#include "base/singleton.h"
+#include "base/object.h"
+#include "base/pointer.h"
+#include "base/interface.h"
 
 namespace Pololu {
-  namespace USB {
-    class Error :
-      public Exception {
-    public:
-      /** Types and non-static subclasses
-        */
-      class Descriptions :
-        public std::map<int, std::string> {
-      public:
-        /** Construct a Pololu USB error descriptions object
-          */
-        Descriptions();
+  class Device :
+    public Object {
+  public:
+    /** Construct a Pololu device
+      */
+    Device(const Device& src);
 
-        /** Access the USB error description for the specified error
-          */
-        std::string operator[](int error) const;
-        using std::map<int, std::string>::operator[];
-      };
+    /** Destroy a Pololu device
+      */
+    virtual ~Device();
 
-      /** Construct a Pololu USB error
-        */
-      Error(int error);
+    /** Access the vendor ID of the Pololu device
+      */
+    size_t getVendorId() const;
+    /** Access the product ID of the Pololu device
+      */
+    size_t getProductId() const;
 
-      /** Pololu USB error assertion
-        */
-      static void assert(int error);
-    };
+    /** Access the type name of the Pololu device
+      */
+    virtual std::string getTypeName() const = 0;
+    /** Access the full name of the Pololu device
+      */
+    virtual std::string getFullName() const = 0;
+
+    /** Access the interface of the Pololu device
+      */
+    void setInterface(const Pointer<Interface>& interface);
+    const Pointer<Interface>& getInterface() const;
+
+    /** Pololu device assignments
+      */
+    Device& operator=(const Device& src);
+
+    /** Clone the Pololu device
+      */
+    virtual Pointer<Device> clone() const = 0;
+
+    /** Write the device to the given stream
+      */
+    void write(std::ostream& stream) const;
+  protected:
+    size_t vendorId;
+    size_t productId;
+
+    Pointer<Interface> interface;
+
+    /** Construct a Pololu device
+      */
+    Device(size_t vendorId = 0, size_t productId = 0);
   };
 };
+
+std::ostream& operator<<(std::ostream& stream, const Pololu::Device&
+  device);
 
 #endif

@@ -18,25 +18,23 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <sstream>
+#include <iostream>
 
-#include "config/configuration.h"
+#include "pololu.h"
+
+using namespace Pololu;
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " FILENAME [SECTION]" << std::endl;
-    return -1;
+  std::list<Pointer<Device> > devices = discoverDevices();
+
+  if (!devices.empty()) {
+    for (std::list<Pointer<Device> >::const_iterator it = devices.begin();
+        it != devices.end(); ++it)
+      std::cout << **it << " on " << (*it)->getInterface()->getFullName() <<
+        " interface " << *(*it)->getInterface() << std::endl;
   }
-
-  std::cout << "Parsing configuration file " << argv[1] << std::endl;
-  PololuConfiguration configuration;
-
-  configuration.load(argv[1]);
-
-  if (argc == 3)
-    std::cout << ((const PololuConfiguration&)configuration)(argv[2]);
   else
-    std::cout << configuration;
+    std::cout << "No devices found." << std::endl;
 
   return 0;
 }

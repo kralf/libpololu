@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Ralf Kaestner and Luciano Spinello              *
+ *   Copyright (C) 2004 by Ralf Kaestner                                   *
  *   ralf.kaestner@gmail.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,47 +18,67 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef POLOLU_USB_ERROR_H
-#define POLOLU_USB_ERROR_H
+#ifndef POLOLU_POINTER_H
+#define POLOLU_POINTER_H
 
-/** \file error.h
-  * \brief Pololu USB error
+/** \file pointer.h
+  * \brief Templated Pololu pointer
   */
 
-#include <map>
-
 #include "base/exception.h"
-#include "base/singleton.h"
 
 namespace Pololu {
-  namespace USB {
-    class Error :
+  template <class C> class Pointer {
+  public:
+    /** Types and non-static subclasses
+      */
+    class NullError :
       public Exception {
     public:
-      /** Types and non-static subclasses
+      /** Construct a null pointer error
         */
-      class Descriptions :
-        public std::map<int, std::string> {
-      public:
-        /** Construct a Pololu USB error descriptions object
-          */
-        Descriptions();
-
-        /** Access the USB error description for the specified error
-          */
-        std::string operator[](int error) const;
-        using std::map<int, std::string>::operator[];
-      };
-
-      /** Construct a Pololu USB error
-        */
-      Error(int error);
-
-      /** Pololu USB error assertion
-        */
-      static void assert(int error);
+      NullError();
     };
+
+    /** Construct a Pololu pointer
+      */
+    Pointer(C* instance = 0);
+    Pointer(const Pointer<C>& src);
+
+    /** Destroy a Pololu pointer
+      */
+    virtual ~Pointer();
+
+    /** Pololu pointer assignments
+      */
+    Pointer<C>& operator=(C* instance);
+    Pointer<C>& operator=(const Pointer<C>& src);
+
+    /** Pololu pointer conversions
+      */
+    virtual C* operator->() const;
+    virtual C& operator*() const;
+
+    /** Pololu pointer comparisons
+      */
+    template <class D> bool operator==(D* instance) const;
+    template <class D> bool operator==(const Pointer<D>& pointer) const;
+    template <class D> bool operator!=(D* instance) const;
+    template <class D> bool operator!=(const Pointer<D>& pointer) const;
+
+    /** Pololu pointer manipulations
+      */
+    void free();
+
+    /** Pololu pointer queries
+      */
+    bool isNull() const;
+    bool operator!() const;
+  protected:
+    C* instance;
   };
 };
+
+#include "base/pointer.tpp"
 
 #endif

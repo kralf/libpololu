@@ -18,71 +18,44 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef POLOLU_DEVICE_H
-#define POLOLU_DEVICE_H
+#ifndef POLOLU_OBJECT_H
+#define POLOLU_OBJECT_H
 
-/** \file device.h
-  * \brief Pololu USB device
+/** \file object.h
+  * \brief Pololu object
   */
 
-#include <map>
-#include <string>
+#include "base/pointer.h"
+#include "base/exception.h"
 
-struct libusb_device;
-
-class PololuDevice {
-friend class PololuContext;
-public:
-  /** Types and non-static subclasses
-    */
-  enum Speed {
-    unknown,
-    low,
-    full,
-    high,
-    super,
-  };
-
-  class SpeedStrings :
-    public std::map<Speed, std::string> {
+namespace Pololu {
+  class Object {
+  template <class> friend class Pointer;
   public:
-    /** Construct a speed string object
+    /** Types and non-static subclasses
       */
-    SpeedStrings();
+    class DestructionError :
+      public Exception {
+    public:
+      /** Construct an object destruction error
+        */
+      DestructionError();
+    };
+
+    /** Construct a Pololu object
+      */
+    Object();
+
+    /** Destroy a Pololu object
+      */
+    virtual ~Object();
+
+    /** Access the Pololu object's number of references
+      */
+    size_t getNumReferences() const;
+  private:
+    size_t numReferences;
   };
-
-  /** Construct a USB device
-    */
-  PololuDevice();
-  PololuDevice(const PololuDevice& src);
-
-  /** Destroy a USB device
-    */
-  virtual ~PololuDevice();
-
-  /** Access the bus number of the device
-    */
-  size_t getBus() const;
-  /** Access the address of the device
-    */
-  size_t getAddress() const;
-  /** Access the speed of the device
-    */
-  Speed getSpeed() const;
-
-  /** USB device assignments
-    */
-  PololuDevice& operator=(const PololuDevice& src);
-
-  /** Write the USB device to the given stream
-    */
-  void write(std::ostream& stream) const;
-
-  static const SpeedStrings speedStrings;
-protected:
-  libusb_device* device;
 };
-
-std::ostream& operator<<(std::ostream& stream, const PololuDevice& device);
 
 #endif
