@@ -18,9 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "base/singleton.h"
-#include "base/factory.h"
-
 /*****************************************************************************/
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
@@ -31,16 +28,17 @@ Pololu::Prototype<C>::Prototype() {
 
 template <class C>
 template <class D> Pololu::Prototype<C>::Prototype(D* instance, const
-    std::string& typeName) :
+    std::string& typeName, Factory<C>& factory) :
   typeName(typeName),
+  factory(&factory),
   instance(instance) {
-  Singleton<Factory<C> >::getInstance().registerPrototype(
-    this->typeName, this->instance);
+  this->factory->registerPrototype(this->typeName, this->instance);
 }
 
 template <class C>
 Pololu::Prototype<C>::Prototype(const Prototype<C>& src) :
   typeName(src.typeName),
+  factory(src.factory),
   instance(src.instance) {
   src.instance = 0;
 }
@@ -48,7 +46,7 @@ Pololu::Prototype<C>::Prototype(const Prototype<C>& src) :
 template <class C>
 Pololu::Prototype<C>::~Prototype() {
   if (!instance.isNull())
-    Singleton<Factory<C> >::getInstance().unregisterPrototype(typeName);
+    factory->unregisterPrototype(typeName);
 }
 
 /*****************************************************************************/
@@ -56,12 +54,14 @@ Pololu::Prototype<C>::~Prototype() {
 /*****************************************************************************/
 
 template <class C>
-Pololu::Prototype<C>& Pololu::Prototype<C>::operator=(const Prototype<C>&
-    src) {
+Pololu::Prototype<C>& Pololu::Prototype<C>::operator=(const
+    Prototype<C>& src) {
   if (!instance.isNull())
-    Singleton<Factory<C> >::getInstance().unregisterPrototype(typeName);
+    factory->unregisterPrototype(typeName);
 
   typeName = src.typeName;
+
+  factory = src.factory;
   instance = src.instance;
 
   return *this;

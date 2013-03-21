@@ -110,7 +110,7 @@ void Pololu::Configuration::Document::fromXML(const xmlpp::Element& element) {
 
 void Pololu::Configuration::Document::toXML(xmlpp::Document& document) const {
   document.add_comment("Document format: "PROJECT_NAME
-    " configuration file (version "PROJECT_VERSION")");
+    " XML document (version "PROJECT_VERSION")");
 
   Section::toXML(document);
 }

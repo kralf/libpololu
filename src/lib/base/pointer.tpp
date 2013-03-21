@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "base/type.h"
+
 /*****************************************************************************/
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
@@ -25,6 +27,11 @@
 template <class C>
 Pololu::Pointer<C>::NullError::NullError() :
   Exception("Null pointer access") {
+}
+
+template <class C>
+Pololu::Pointer<C>::TypeError::TypeError(const std::string& typeName) :
+  Exception("Invalid instance type: %s", typeName.c_str()) {
 }
 
 template <class C>
@@ -87,6 +94,20 @@ template <class C>
 C& Pololu::Pointer<C>::operator*() const {
   if (instance)
     return *instance;
+  else
+    throw NullError();
+}
+
+template <class C>
+template <class D> Pololu::Pointer<D> Pololu::Pointer<C>::typeCast() const {
+  if (instance) {
+    D* instance = dynamic_cast<D*>(this->instance);
+
+    if (instance)
+      return Pointer<D>(instance);
+    else
+      throw TypeError(Type<D>::getName());
+  }
   else
     throw NullError();
 }

@@ -22,23 +22,31 @@
 
 #include "config/document.h"
 
+#include "command/application.h"
+
 using namespace Pololu;
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " FILENAME [SECTION]" << std::endl;
-    return -1;
+  Command::Application application(
+    "Parse Pololu configuration file");
+  application[0] = Command::Argument(
+    "Path to the configuration file", "FILENAME");
+  application[1] = Command::Argument(
+    "Name of the configuration section", "SECTION", "/");
+
+  if (application.parseArguments(argc, argv)) {
+    std::cout << "Parsing configuration file " <<
+      application[0].getValue() << "..." << std::endl;
+
+    Configuration::Document document;
+    document.load(application[0].getValue());
+
+    if (application[1].getValue() != "/")
+      std::cout << const_cast<const Configuration::Document&>(document)(
+        application[1].getValue());
+    else
+      std::cout << document;
   }
-
-  std::cout << "Parsing configuration file " << argv[1] << "..." << std::endl;
-  Configuration::Document document;
-
-  document.load(argv[1]);
-
-  if (argc == 3)
-    std::cout << const_cast<const Configuration::Document&>(document)(argv[2]);
-  else
-    std::cout << document;
 
   return 0;
 }

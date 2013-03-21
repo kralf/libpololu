@@ -22,19 +22,24 @@
 
 #include "pololu.h"
 
+#include "command/application.h"
+
 using namespace Pololu;
 
 int main(int argc, char **argv) {
-  std::list<Pointer<Device> > devices = discoverDevices();
+  Command::Application application(
+    "List Pololu devices in all available contexts");
 
-  if (!devices.empty()) {
-    for (std::list<Pointer<Device> >::const_iterator it = devices.begin();
-        it != devices.end(); ++it)
-      std::cout << **it << " on " << (*it)->getInterface()->getFullName() <<
-        " interface " << *(*it)->getInterface() << std::endl;
+  if (application.parseArguments(argc, argv)) {
+    std::list<Pointer<Device> > devices = discoverDevices();
+
+    if (!devices.empty()) {
+      for (std::list<Pointer<Device> >::const_iterator it = devices.begin();
+          it != devices.end(); ++it)
+        std::cout << **it << " on " << (*it)->getInterface()->getName() <<
+          " " << *(*it)->getInterface() << std::endl;
+    }
   }
-  else
-    std::cout << "No devices found." << std::endl;
 
   return 0;
 }

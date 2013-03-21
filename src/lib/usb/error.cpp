@@ -28,7 +28,7 @@
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-Pololu::USB::Error::Descriptions::Descriptions() {
+Pololu::Usb::Error::Descriptions::Descriptions() {
   (*this)[LIBUSB_SUCCESS] = "Success.";
   (*this)[LIBUSB_ERROR_IO] = "Input/output error.";
   (*this)[LIBUSB_ERROR_INVALID_PARAM] = "Invalid parameter.";
@@ -45,7 +45,7 @@ Pololu::USB::Error::Descriptions::Descriptions() {
   (*this)[LIBUSB_ERROR_OTHER] = "Other error.";
 }
 
-Pololu::USB::Error::Error(int error) :
+Pololu::Usb::Error::Error(int error) :
   Exception("USB error: %s",
     Singleton<Descriptions>::getInstance()[error].c_str()) {
 }
@@ -54,7 +54,7 @@ Pololu::USB::Error::Error(int error) :
 /* Accessors                                                                 */
 /*****************************************************************************/
 
-std::string Pololu::USB::Error::Descriptions::operator[](int error) const {
+std::string Pololu::Usb::Error::Descriptions::operator[](int error) const {
   const_iterator it = find(error);
   if (it != end())
     return it->second;
@@ -66,7 +66,9 @@ std::string Pololu::USB::Error::Descriptions::operator[](int error) const {
 /* Methods                                                                   */
 /*****************************************************************************/
 
-void Pololu::USB::Error::assert(int error) {
-  if (error != LIBUSB_SUCCESS)
+int Pololu::Usb::Error::assert(int error) {
+  if (error < LIBUSB_SUCCESS)
     throw Error(error);
+  else
+    return error;
 }

@@ -27,25 +27,15 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 
 #include "base/object.h"
-#include "base/exception.h"
 
 namespace Pololu {
   namespace Configuration {
     class Parameter :
       public Pololu::Object {
     public:
-      /** Types and non-static subclasses
-        */
-      class ConversionError :
-        public Exception {
-      public:
-        /** Construct a parameter conversion error
-          */
-        ConversionError(const std::string& value);
-      };
-
       /** Construct a Pololu configuration parameter
         */
       Parameter();
@@ -60,8 +50,12 @@ namespace Pololu {
         */
       const std::string& getValue() const;
       template <typename T> T getValue() const;
+      template <typename T, typename U> T getValue(const
+        std::map<U, std::string>& values) const;
       void setValue(const std::string& value);
       template <typename T> void setValue(const T& value);
+      template <typename T, typename U> void setValue(const
+        T& value, const std::map<U, std::string>& values);
 
       /** Pololu configuration parameter assignments
         */

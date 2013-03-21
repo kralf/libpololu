@@ -104,10 +104,17 @@ namespace Pololu {
       /** Read the configuration section from the given stream
         */
       void read(std::istream& stream);
-
       /** Write the configuration section to the given stream
         */
       void write(std::ostream& stream) const;
+
+      /** Attempt to query the parameter at the specified location and
+        * assign its value to the given variable if the parameter exists
+        */
+      template <typename T> bool query(const std::string& location,
+        T& value) const;
+      template <typename T, typename U> bool query(const std::string&
+        location, T& value, const std::map<U, std::string>& values) const;
 
       /** Pololu configuration section manipulations
         */
@@ -143,5 +150,7 @@ std::istream& operator>>(std::istream& stream,
   Pololu::Configuration::Section& section);
 std::ostream& operator<<(std::ostream& stream, const
   Pololu::Configuration::Section& section);
+
+#include "config/section.tpp"
 
 #endif

@@ -31,35 +31,35 @@
 /* Statics                                                                   */
 /*****************************************************************************/
 
-Pololu::Prototype<Pololu::Context> Pololu::USB::Context::prototype(
-  new Pololu::USB::Context(), "USB");
+Pololu::Prototype<Pololu::Context> Pololu::Usb::Context::prototype(
+  new Pololu::Usb::Context(), "Usb");
 
 /*****************************************************************************/
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-Pololu::USB::Context::DebugLevels::DebugLevels() {
-  (*this)[minimal] = "minimal";
-  (*this)[error] = "error";
-  (*this)[warning] = "warning";
-  (*this)[verbose] = "verbose";
+Pololu::Usb::Context::DebugLevels::DebugLevels() {
+  (*this)[debugLevelMinimal] = "Minimal";
+  (*this)[debugLevelError] = "Error";
+  (*this)[debugLevelWarning] = "Warning";
+  (*this)[debugLevelVerbose] = "Verbose";
 }
 
-Pololu::USB::Context::Context(DebugLevel debugLevel) :
+Pololu::Usb::Context::Context(DebugLevel debugLevel) :
   debugLevel(debugLevel),
   context(0) {
-  Pololu::USB::Error::assert(libusb_init(&context));
+  Error::assert(libusb_init(&context));
   libusb_set_debug(context, this->debugLevel);
 }
 
-Pololu::USB::Context::Context(const Context& src) :
+Pololu::Usb::Context::Context(const Context& src) :
   debugLevel(src.debugLevel),
   context(0) {
-  Pololu::USB::Error::assert(libusb_init(&context));
+  Error::assert(libusb_init(&context));
   libusb_set_debug(context, debugLevel);
 }
 
-Pololu::USB::Context::~Context() {
+Pololu::Usb::Context::~Context() {
   libusb_exit(context);
 }
 
@@ -67,16 +67,16 @@ Pololu::USB::Context::~Context() {
 /* Accessors                                                                 */
 /*****************************************************************************/
 
-void Pololu::USB::Context::setDebugLevel(DebugLevel debugLevel) {
+void Pololu::Usb::Context::setDebugLevel(DebugLevel debugLevel) {
   this->debugLevel = debugLevel;
   libusb_set_debug(context, this->debugLevel);
 }
 
-Pololu::USB::Context::DebugLevel Pololu::USB::Context::getDebugLevel() const {
+Pololu::Usb::Context::DebugLevel Pololu::Usb::Context::getDebugLevel() const {
   return debugLevel;
 }
 
-std::list<Pololu::USB::Interface> Pololu::USB::Context::getInterfaces()
+std::list<Pololu::Usb::Interface> Pololu::Usb::Context::getInterfaces()
     const {
   std::list<Interface> interfaces;
 
@@ -89,25 +89,44 @@ std::list<Pololu::USB::Interface> Pololu::USB::Context::getInterfaces()
   return interfaces;
 }
 
-Pololu::Pointer<Pololu::Interface> Pololu::USB::Context::getInterface(const
+Pololu::Usb::Interface* Pololu::Usb::Context::getInterface(const
     std::string& address) const {
+  unsigned char deviceBus, deviceAddress;
+  Interface* interface = 0;
+
+  if (sscanf(address.c_str(), "%hhu:%hhu", &deviceBus, &deviceAddress) == 2) {
+    libusb_device** devices;
+    size_t numDevices = libusb_get_device_list(context, &devices);
+    for (int i = 0; i < numDevices; ++i)
+      if ((libusb_get_bus_number(devices[i]) == deviceBus) &&
+        (libusb_get_device_address(devices[i]) == deviceAddress)) {
+      interface = new Interface(devices[i]);
+      break;
+    }
+    libusb_free_device_list(devices, 1);
+  }
+
+  if (interface)
+    return interface;
+  else
+    throw AddressError(address);
 }
 
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
 
-Pololu::USB::Context& Pololu::USB::Context::operator=(const Context& src) {
+Pololu::Usb::Context& Pololu::Usb::Context::operator=(const Context& src) {
   setDebugLevel(src.debugLevel);
   return *this;
 }
 
-Pololu::Pointer<Pololu::Context> Pololu::USB::Context::clone() const {
+Pololu::Usb::Context* Pololu::Usb::Context::clone() const {
   return new Context(*this);
 }
 
 std::list<Pololu::Pointer<Pololu::Device> >
-    Pololu::USB::Context::discoverDevices() const {
+    Pololu::Usb::Context::discoverDevices() const {
   std::list<Pointer<Device> > devices;
 
   const std::map<std::string, Pointer<Device> >&

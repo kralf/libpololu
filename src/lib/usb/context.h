@@ -22,7 +22,7 @@
 #define POLOLU_USB_CONTEXT_H
 
 /** \file context.h
-  * \brief Pololu USB context
+  * \brief Pololu USB communication context
   */
 
 #include "base/context.h"
@@ -34,17 +34,17 @@
 struct libusb_context;
 
 namespace Pololu {
-  namespace USB {
+  namespace Usb {
     class Context :
       public Pololu::Context {
     public:
       /** Types and non-static subclasses
         */
       enum DebugLevel {
-        minimal = 0,
-        error = 1,
-        warning = 2,
-        verbose = 3
+        debugLevelMinimal = 0,
+        debugLevelError = 1,
+        debugLevelWarning = 2,
+        debugLevelVerbose = 3
       };
 
       class DebugLevels :
@@ -57,7 +57,7 @@ namespace Pololu {
 
       /** Construct a Pololu USB context
         */
-      Context(DebugLevel debugLevel = minimal);
+      Context(DebugLevel debugLevel = debugLevelMinimal);
       Context(const Context& src);
 
       /** Destroy a Pololu USB context
@@ -73,8 +73,7 @@ namespace Pololu {
         */
       std::list<Interface> getInterfaces() const;
 
-      Pointer<Pololu::Interface> getInterface(const std::string&
-        address) const;
+      Interface* getInterface(const std::string& address) const;
 
       /** Pololu USB context assignments
         */
@@ -82,7 +81,7 @@ namespace Pololu {
 
       /** Clone the Pololu USB context
         */
-      Pointer<Pololu::Context> clone() const;
+      Context* clone() const;
 
       std::list<Pointer<Device> > discoverDevices() const;
     protected:

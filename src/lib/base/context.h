@@ -58,12 +58,11 @@ namespace Pololu {
     /** Access the Pololu interface corresponding to the specified
       * address within the Pololu context
       */
-    virtual Pointer<Interface> getInterface(const std::string&
-      address) const = 0;
+    virtual Interface* getInterface(const std::string& address) const = 0;
 
     /** Clone the Pololu context
       */
-    virtual Pointer<Context> clone() const = 0;
+    virtual Context* clone() const = 0;
 
     /** Discover all Pololu devices in the context
       */

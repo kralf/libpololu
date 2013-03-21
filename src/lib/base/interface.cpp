@@ -24,25 +24,22 @@
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-Pololu::Interface::ConnectionError::ConnectionError(const std::string&
-    address) :
-  Exception("Error connecting to %s", address.c_str()) {
+Pololu::Interface::OperationError::OperationError() :
+  Exception("Invalid operation on closed interface") {
 }
 
-Pololu::Interface::ReadError::ReadError(const std::string& address) :
-  Exception("Error reading from %s", address.c_str()) {
+Pololu::Interface::RequestError::RequestError() :
+  Exception("Invalid interface request") {
 }
 
-Pololu::Interface::WriteError::WriteError(const std::string& address) :
-  Exception("Error writing to %s", address.c_str()) {
-}
-
-Pololu::Interface::Interface(const std::string& address) :
-  address(address) {
+Pololu::Interface::Interface(const std::string& address, double timeout) :
+  address(address),
+  timeout(timeout) {
 }
 
 Pololu::Interface::Interface(const Interface& src) :
-  address(src.address) {
+  address(src.address),
+  timeout(src.timeout) {
 }
 
 Pololu::Interface::~Interface() {
@@ -56,18 +53,27 @@ const std::string& Pololu::Interface::getAddress() const {
   return address;
 }
 
+double Pololu::Interface::getTimeout() const {
+  return timeout;
+}
+
+void Pololu::Interface::setTimeout(double timeout) {
+  this->timeout = timeout;
+}
+
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
 
 Pololu::Interface& Pololu::Interface::operator=(const Interface& src) {
-  if (isConnected())
-    disconnect();
+  if (isOpen())
+    close();
 
   address = src.address;
+  timeout = src.timeout;
 
-  if (src.isConnected())
-    connect();
+  if (src.isOpen())
+    open();
 
   return *this;
 }

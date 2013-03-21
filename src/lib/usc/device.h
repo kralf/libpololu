@@ -22,7 +22,7 @@
 #define POLOLU_USC_DEVICE_H
 
 /** \file device.h
-  * \brief Pololu USB servo controller device
+  * \brief Pololu USB servo controller (USC) device
   */
 
 #include <list>
@@ -32,12 +32,37 @@
 #include "base/prototype.h"
 
 namespace Pololu {
-  namespace USBServoController {
+  namespace Usc {
     class Device :
       public Pololu::Device {
     public:
       /** Types and non-static subclasses
         */
+      enum Type {
+        typeMaestro6 = 0x88,
+        typeMaestro6b = 0x89,
+        typeMaestro12 = 0x8a,
+        typeMaestro12b = 0x8d,
+        typeMaestro18 = 0x8b,
+        typeMaestro18b = 0x8e,
+        typeMaestro24 = 0x8c,
+        typeMaestro24b = 0x8f
+      };
+
+      class Types :
+        public std::map<Type, std::string> {
+      public:
+        /** Construct a USB servo controller types object
+          */
+        Types();
+
+        /** Access the USB servo controller type for the specified
+          * product ID
+          */
+        std::string operator[](Type productId) const;
+        using std::map<Type, std::string>::operator[];
+      };
+
       class Prototypes :
         public std::list<Prototype<Pololu::Device> > {
       public:
@@ -46,45 +71,31 @@ namespace Pololu {
         Prototypes();
       };
 
-      class TypeNames :
-        public std::map<size_t, std::string> {
+      class Names :
+        public std::map<Type, std::string> {
       public:
-        /** Construct a USB servo controller type names object
+        /** Construct a USB servo controller names object
           */
-        TypeNames();
+        Names();
 
-        /** Access the USB servo controller type name for the
+        /** Access the USB servo controller name for the
           * specified product ID
           */
-        std::string operator[](size_t productId) const;
-        using std::map<size_t, std::string>::operator[];
-      };
-
-      class FullNames :
-        public std::map<size_t, std::string> {
-      public:
-        /** Construct a USB servo controller full names object
-          */
-        FullNames();
-
-        /** Access the USB servo controller full name for the
-          * specified product ID
-          */
-        std::string operator[](size_t productId) const;
-        using std::map<size_t, std::string>::operator[];
+        std::string operator[](Type productId) const;
+        using std::map<Type, std::string>::operator[];
       };
 
       /** Construct a Pololu USB servo controller device
         */
-      Device(size_t productId);
+      Device(Type productId);
       Device(const Device& src);
 
       /** Destroy a Pololu USB servo controller device
         */
       virtual ~Device();
 
-      std::string getTypeName() const;
-      std::string getFullName() const;
+      std::string getName() const;
+      const Protocol& getProtocol(const std::string& typeName) const;
 
       /** Pololu USB servo controller device assignments
         */
@@ -92,7 +103,7 @@ namespace Pololu {
 
       /** Clone the USB servo controller device
         */
-      Pointer<Pololu::Device> clone() const;
+      Device* clone() const;
     private:
       static Prototypes prototypes;
     };

@@ -20,34 +20,38 @@
 
 #include <sstream>
 
-/*****************************************************************************/
-/* Constructors and Destructor                                               */
-/*****************************************************************************/
-
-template <typename T> Pololu::Configuration::Parameter::Parameter(
-    const T& value) {
-  setValue(value);
-}
+#include "base/serializable.h"
 
 /*****************************************************************************/
 /* Accessors                                                                 */
 /*****************************************************************************/
 
 template <typename T> T Pololu::Configuration::Parameter::getValue() const {
-  std::istringstream stream(this->value);
-  T value;
+  std::istringstream stream(value);
+  return Serializable<T>().read(stream);
+}
 
-  if (stream >> value)
-    return value;
-  else
-    throw ConversionError(this->value);
+template <typename T, typename U>
+    T Pololu::Configuration::Parameter::getValue(const
+    std::map<U, std::string>& values) const {
+  std::istringstream stream(value);
+  return Serializable<T>().read(stream, values);
 }
 
 template <typename T> void Pololu::Configuration::Parameter::setValue(
     const T& value) {
   std::ostringstream stream;
+  Serializable<T>(value).write(stream);
 
-  stream << value;
+  this->value = stream.str();
+}
+
+template <typename T, typename U>
+    void Pololu::Configuration::Parameter::setValue(const T& value, const
+    std::map<U, std::string>& values) {
+  std::ostringstream stream;
+  Serializable<T>(value).write(stream, values);
+
   this->value = stream.str();
 }
 
@@ -61,5 +65,5 @@ template <typename T> Pololu::Configuration::Parameter&
 }
 
 template <typename T> Pololu::Configuration::Parameter::operator T() const {
-  return getValue();
+  return getValue<T>();
 }

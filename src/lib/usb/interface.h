@@ -29,12 +29,14 @@
 
 #include "base/interface.h"
 
+#include "usb/request.h"
+
 struct libusb_device;
 struct libusb_device_descriptor;
 struct libusb_device_handle;
 
 namespace Pololu {
-  namespace USB {
+  namespace Usb {
     class Interface :
       public Pololu::Interface {
     friend class Context;
@@ -42,16 +44,16 @@ namespace Pololu {
       /** Types and non-static subclasses
         */
       class DeviceClasses :
-        public std::map<size_t, std::string> {
+        public std::map<unsigned char, std::string> {
       public:
         /** Construct a USB device classes object
           */
         DeviceClasses();
 
-        /** Access the USB device class for the specified class ID
+        /** Access the USB device class for the specified class code
           */
-        std::string operator[](size_t id) const;
-        using std::map<size_t, std::string>::operator[];
+        std::string operator[](unsigned char code) const;
+        using std::map<unsigned char, std::string>::operator[];
       };
 
       /** Construct a Pololu USB interface
@@ -65,26 +67,28 @@ namespace Pololu {
       /** Access the number of the bus a device is attached to the USB
         * interface
         */
-      size_t getDeviceBus() const;
+      unsigned char getDeviceBus() const;
       /** Access the address of the device attached to the USB interface
         */
-      size_t getDeviceAddress() const;
+      unsigned char getDeviceAddress() const;
       /** Access the vendor ID of the device attached to the USB interface
         */
-      size_t getDeviceVendorId() const;
+      unsigned short getDeviceVendorId() const;
       /** Access the product ID of the device attached to the USB interface
         */
-      size_t getDeviceProductId() const;
-      /** Access the class ID of the device attached to the USB interface
+      unsigned short getDeviceProductId() const;
+      /** Access the class code of the device attached to the USB interface
         */
-      size_t getDeviceClassId() const;
+      unsigned char getDeviceClassCode() const;
       /** Access the specification release number the device attached to
         * the USB interface
         */
-      size_t getDeviceSpecification() const;
+      unsigned short getDeviceSpecification() const;
+      /** Access the serial number of the device attached to the USB interface
+        */
+      std::string getDeviceSerialNumber() const;
 
-      std::string getTypeName() const;
-      std::string getFullName() const;
+      std::string getName() const;
 
       /** Pololu USB interface assignments
         */
@@ -92,17 +96,23 @@ namespace Pololu {
 
       /** Pololu USB interface operations
         */
-      void connect();
-      using Pololu::Interface::connect;
-      void disconnect();
+      void open();
+      void close();
+      void transfer(Request& request);
+
+      Pointer<Device> discoverDevice() const;
 
       /** Pololu USB interface queries
         */
-      bool isConnected() const;
+      bool isOpen() const;
     protected:
       /** Construct a Pololu USB interface
         */
       Interface(libusb_device* device);
+
+      /** Pololu USB interface operations
+        */
+      void transfer(Pololu::Request& request);
     private:
       libusb_device* device;
       libusb_device_descriptor* descriptor;

@@ -26,6 +26,8 @@
   */
 
 #include "base/type.h"
+#include "base/singleton.h"
+#include "base/factory.h"
 #include "base/pointer.h"
 
 namespace Pololu {
@@ -35,7 +37,8 @@ namespace Pololu {
       */
     Prototype();
     template <class D> Prototype(D* instance, const std::string&
-      typeName = Type<D>::getName());
+      typeName = Type<D>::getName(), Factory<C>&
+      factory = Singleton<Factory<C> >::getInstance());
     Prototype(const Prototype<C>& src);
 
     /** Destroy a Pololu prototype
@@ -48,6 +51,7 @@ namespace Pololu {
   protected:
     std::string typeName;
   private:
+    Pointer<Factory<C> > factory;
     mutable Pointer<C> instance;
   };
 };

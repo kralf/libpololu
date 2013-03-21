@@ -1,2 +1,2 @@
-remake_add_library(smc LINK config)
-remake_add_headers(INSTALL smc)
+remake_add_library(smc RECURSE LINK config)
+remake_add_headers(RECURSE INSTALL smc)

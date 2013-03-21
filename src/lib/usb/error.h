@@ -31,7 +31,7 @@
 #include "base/singleton.h"
 
 namespace Pololu {
-  namespace USB {
+  namespace Usb {
     class Error :
       public Exception {
     public:
@@ -56,7 +56,7 @@ namespace Pololu {
 
       /** Pololu USB error assertion
         */
-      static void assert(int error);
+      static int assert(int error);
     };
   };
 };

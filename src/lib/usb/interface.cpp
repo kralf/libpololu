@@ -24,6 +24,7 @@
 #include <libusb.h>
 
 #include "base/singleton.h"
+#include "base/factory.h"
 
 #include "interface.h"
 #include "error.h"
@@ -32,19 +33,19 @@
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-Pololu::USB::Interface::DeviceClasses::DeviceClasses() {
-  (*this)[LIBUSB_CLASS_PER_INTERFACE] = "specific";
-  (*this)[LIBUSB_CLASS_AUDIO] = "audio";
-  (*this)[LIBUSB_CLASS_COMM] = "communication";
-  (*this)[LIBUSB_CLASS_HID] = "human interface";
-  (*this)[LIBUSB_CLASS_PRINTER] = "printer";
-  (*this)[LIBUSB_CLASS_MASS_STORAGE] = "storage";
-  (*this)[LIBUSB_CLASS_HUB] = "hub";
-  (*this)[LIBUSB_CLASS_DATA] = "data";
-  (*this)[LIBUSB_CLASS_VENDOR_SPEC] = "vendor";
+Pololu::Usb::Interface::DeviceClasses::DeviceClasses() {
+  (*this)[LIBUSB_CLASS_PER_INTERFACE] = "Specific";
+  (*this)[LIBUSB_CLASS_AUDIO] = "Audio";
+  (*this)[LIBUSB_CLASS_COMM] = "Communication";
+  (*this)[LIBUSB_CLASS_HID] = "Hid";
+  (*this)[LIBUSB_CLASS_PRINTER] = "Printer";
+  (*this)[LIBUSB_CLASS_MASS_STORAGE] = "Storage";
+  (*this)[LIBUSB_CLASS_HUB] = "Hub";
+  (*this)[LIBUSB_CLASS_DATA] = "Data";
+  (*this)[LIBUSB_CLASS_VENDOR_SPEC] = "Vendor";
 }
 
-Pololu::USB::Interface::Interface(libusb_device* device) :
+Pololu::Usb::Interface::Interface(libusb_device* device) :
   device(device),
   descriptor(0),
   handle(0) {
@@ -52,18 +53,19 @@ Pololu::USB::Interface::Interface(libusb_device* device) :
     libusb_ref_device(this->device);
 
     descriptor = new libusb_device_descriptor();
-    Pololu::USB::Error::assert(
+    Pololu::Usb::Error::assert(
       libusb_get_device_descriptor(this->device, descriptor));
 
     std::ostringstream stream;
-    stream << std::setw(2) << std::setfill('0') << getDeviceBus() << ":" <<
-      std::setw(2) << std::setfill('0') << getDeviceAddress();
+    stream << std::setfill('0') << std::setw(3) <<
+      (size_t)getDeviceBus() << ":" << std::setfill('0') <<
+      std::setw(3) << (size_t)getDeviceAddress();
 
     address = stream.str();
   }
 }
 
-Pololu::USB::Interface::Interface(const Pololu::USB::Interface& src) :
+Pololu::Usb::Interface::Interface(const Interface& src) :
   Pololu::Interface(src),
   descriptor(src.descriptor ?
     new libusb_device_descriptor(*src.descriptor) : 0),
@@ -73,9 +75,9 @@ Pololu::USB::Interface::Interface(const Pololu::USB::Interface& src) :
     libusb_ref_device(device);
 }
 
-Pololu::USB::Interface::~Interface() {
+Pololu::Usb::Interface::~Interface() {
   if (handle)
-    disconnect();
+    close();
   if (descriptor)
     delete descriptor;
   if (device)
@@ -86,73 +88,83 @@ Pololu::USB::Interface::~Interface() {
 /* Accessors                                                                 */
 /*****************************************************************************/
 
-std::string Pololu::USB::Interface::DeviceClasses::operator[](size_t classId)
-    const {
-  const_iterator it = find(classId);
+std::string Pololu::Usb::Interface::DeviceClasses::operator[](
+    unsigned char code) const {
+  const_iterator it = find(code);
   if (it != end())
     return it->second;
   else
-    return "other";
+    return "Other";
 }
 
-size_t Pololu::USB::Interface::getDeviceBus() const {
+unsigned char Pololu::Usb::Interface::getDeviceBus() const {
   if (device)
     return libusb_get_bus_number(device);
   else
     return 0;
 }
 
-size_t Pololu::USB::Interface::getDeviceAddress() const {
+unsigned char Pololu::Usb::Interface::getDeviceAddress() const {
   if (device)
     return libusb_get_device_address(device);
   else
     return 0;
 }
 
-size_t Pololu::USB::Interface::getDeviceVendorId() const {
+unsigned short Pololu::Usb::Interface::getDeviceVendorId() const {
   if (descriptor)
     return descriptor->idVendor;
   else
     return 0;
 }
 
-size_t Pololu::USB::Interface::getDeviceProductId() const {
+unsigned short Pololu::Usb::Interface::getDeviceProductId() const {
   if (descriptor)
     return descriptor->idProduct;
   else
     return 0;
 }
 
-size_t Pololu::USB::Interface::getDeviceClassId() const {
+unsigned char Pololu::Usb::Interface::getDeviceClassCode() const {
   if (descriptor)
     return descriptor->bDeviceClass;
   else
     return 0;
 }
 
-size_t Pololu::USB::Interface::getDeviceSpecification() const {
+unsigned short Pololu::Usb::Interface::getDeviceSpecification() const {
   if (descriptor)
     return descriptor->bcdUSB;
   else
     return 0;
 }
 
-std::string Pololu::USB::Interface::getTypeName() const {
-  return "usb";
+std::string Pololu::Usb::Interface::getDeviceSerialNumber() const {
+  if (handle) {
+    unsigned char data[256];
+    size_t length;
+
+    length = Error::assert(libusb_get_string_descriptor_ascii(handle,
+      descriptor->iSerialNumber, data, sizeof(data)));
+
+    return std::string(reinterpret_cast<char*>(data), length);
+  }
+  else
+    throw OperationError();
 }
 
-std::string Pololu::USB::Interface::getFullName() const {
-  return "Universal Serial Bus (USB)";
+std::string Pololu::Usb::Interface::getName() const {
+  return "Universal Serial Bus (USB) Interface";
 }
 
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
 
-Pololu::USB::Interface& Pololu::USB::Interface::operator=(const
-    Pololu::USB::Interface& src) {
+Pololu::Usb::Interface& Pololu::Usb::Interface::operator=(const
+    Interface& src) {
   if (handle)
-    disconnect();
+    close();
   if (device)
     libusb_unref_device(device);
 
@@ -176,18 +188,63 @@ Pololu::USB::Interface& Pololu::USB::Interface::operator=(const
   return *this;
 }
 
-void Pololu::USB::Interface::connect() {
-  if (!handle)
-    Pololu::USB::Error::assert(libusb_open(device, &handle));
+void Pololu::Usb::Interface::open() {
+  if (!handle) {
+    Error::assert(libusb_open(device, &handle));
+    if (Error::assert(libusb_kernel_driver_active(handle, 0)))
+      Error::assert(libusb_detach_kernel_driver(handle, 0));
+  }
 }
 
-void Pololu::USB::Interface::disconnect() {
+void Pololu::Usb::Interface::close() {
   if (handle) {
     libusb_close(handle);
     handle = 0;
   }
 }
 
-bool Pololu::USB::Interface::isConnected() const {
+void Pololu::Usb::Interface::transfer(Request& request) {
+  if (handle) {
+    unsigned char* data = 0;
+    unsigned short length = request.data.size();
+
+    if (length)
+      data = &request.data[0];
+
+    Error::assert(libusb_claim_interface(handle, 0));
+    Error::assert(libusb_control_transfer(handle, request.getRequestType(),
+      request.request, request.value, request.index, data, length,
+      timeout*1e3));
+
+    Error::assert(libusb_release_interface(handle, 0));
+  }
+  else
+    throw OperationError();
+}
+
+void Pololu::Usb::Interface::transfer(Pololu::Request& request) {
+  Request* usbRequest = dynamic_cast<Request*>(&request);
+
+  if (usbRequest)
+    transfer(*usbRequest);
+  else
+    throw RequestError();
+}
+
+Pololu::Pointer<Pololu::Device> Pololu::Usb::Interface::discoverDevice()
+    const {
+  const std::map<std::string, Pointer<Device> >&
+    prototypes = Singleton<Factory<Device> >::getInstance().getPrototypes();
+
+  for (std::map<std::string, Pointer<Device> >::const_iterator
+      it = prototypes.begin(); it != prototypes.end(); ++it)
+    if ((getDeviceVendorId() == it->second->getVendorId()) &&
+        (getDeviceProductId() == it->second->getProductId()))
+      return  it->second->clone();
+
+  return 0;
+}
+
+bool Pololu::Usb::Interface::isOpen() const {
   return handle;
 }

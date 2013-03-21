@@ -24,11 +24,6 @@
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
-Pololu::Configuration::Parameter::ConversionError::ConversionError(
-    const std::string& value) :
-  Exception("Error converting parameter value: %s", value.c_str()) {
-}
-
 Pololu::Configuration::Parameter::Parameter() {
 }
 

@@ -3,5 +3,5 @@ remake_include()
 
 remake_add_directories()
 
-remake_add_library(pololu PREFIX OFF LINK usb smc usc)
+remake_add_library(pololu PREFIX OFF LINK command usb serial smc usc)
 remake_add_headers()

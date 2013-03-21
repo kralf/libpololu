@@ -24,6 +24,32 @@
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
+Pololu::Device::FirmwareVersion::FirmwareVersion(size_t major, size_t
+    minor) :
+  major(major),
+  minor(minor) {
+}
+
+Pololu::Device::FirmwareVersion::FirmwareVersion(const FirmwareVersion& src) :
+  major(src.major),
+  minor(src.minor) {
+}
+
+Pololu::Device::FirmwareVersion::~FirmwareVersion() {
+}
+
+Pololu::Device::InterfaceError::InterfaceError() :
+  Exception("Invalid or missing interface") {
+}
+
+Pololu::Device::ProtocolError::ProtocolError(const std::string& typeName) :
+  Exception("Invalid protocol: %s", typeName.c_str()) {
+}
+
+Pololu::Device::ConnectionError::ConnectionError() :
+  Exception("Device not connected") {
+}
+
 Pololu::Device::Device(size_t vendorId, size_t productId) :
   vendorId(vendorId),
   productId(productId) {
@@ -41,6 +67,14 @@ Pololu::Device::~Device() {
 /*****************************************************************************/
 /* Accessors                                                                 */
 /*****************************************************************************/
+
+size_t Pololu::Device::FirmwareVersion::getMajor() const {
+  return major;
+}
+
+size_t Pololu::Device::FirmwareVersion::getMinor() const {
+  return minor;
+}
 
 size_t Pololu::Device::getVendorId() const {
   return vendorId;
@@ -63,6 +97,18 @@ const Pololu::Pointer<Pololu::Interface>& Pololu::Device::getInterface()
 /* Methods                                                                   */
 /*****************************************************************************/
 
+Pololu::Device::FirmwareVersion& Pololu::Device::FirmwareVersion::operator=(
+    const FirmwareVersion& src) {
+  major = src.major;
+  minor = src.minor;
+
+  return *this;
+}
+
+void Pololu::Device::FirmwareVersion::write(std::ostream& stream) const {
+  stream << major << "." << minor;
+}
+
 Pololu::Device& Pololu::Device::operator=(const Pololu::Device& src) {
   vendorId = src.vendorId;
   productId = src.productId;
@@ -72,8 +118,40 @@ Pololu::Device& Pololu::Device::operator=(const Pololu::Device& src) {
   return *this;
 }
 
+void Pololu::Device::connect() {
+  if (!interface.isNull())
+    interface->open();
+  else
+    throw InterfaceError();
+}
+
+void Pololu::Device::disconnect() {
+  if (!interface.isNull())
+    interface->close();
+}
+
+void Pololu::Device::send(Request& request) {
+  if (isConnected())
+    interface->transfer(request);
+  else
+    throw ConnectionError();
+}
+
+bool Pololu::Device::isConnected() {
+  if (!interface.isNull())
+    return interface->isOpen();
+  else
+    return false;
+}
+
 void Pololu::Device::write(std::ostream& stream) const {
-  stream << getFullName();
+  stream << getName();
+}
+
+std::ostream& operator<<(std::ostream& stream, const
+    Pololu::Device::FirmwareVersion& version) {
+  version.write(stream);
+  return stream;
 }
 
 std::ostream& operator<<(std::ostream& stream, const Pololu::Device&

@@ -28,13 +28,74 @@
 #include <iostream>
 
 #include "base/object.h"
+#include "base/exception.h"
 #include "base/pointer.h"
 #include "base/interface.h"
+#include "base/protocol.h"
 
 namespace Pololu {
   class Device :
     public Object {
   public:
+    /** Types and non-static subclasses
+      */
+    class FirmwareVersion :
+      public Object {
+    public:
+      /** Construct a Pololu device firmware version
+        */
+      FirmwareVersion(size_t major = 0, size_t minor = 0);
+      FirmwareVersion(const FirmwareVersion& src);
+
+      /** Destroy a Pololu device firmware version
+        */
+      virtual ~FirmwareVersion();
+
+      /** Access the major version of the device firmware
+        */
+      size_t getMajor() const;
+      void setMajor(size_t major);
+      /** Access the minor version of the device firmware
+        */
+      size_t getMinor() const;
+      void setMinor(size_t major);
+
+      /** Pololu device firmware version assignments
+        */
+      FirmwareVersion& operator=(const FirmwareVersion& src);
+
+      /** Write the firmware version to the given stream
+        */
+      void write(std::ostream& stream) const;
+    protected:
+      size_t major;
+      size_t minor;
+    };
+
+    class InterfaceError :
+      public Exception {
+    public:
+      /** Construct a Pololu device interface error
+        */
+      InterfaceError();
+    };
+
+    class ProtocolError :
+      public Exception {
+    public:
+      /** Construct a Pololu device protocol error
+        */
+      ProtocolError(const std::string& typeName);
+    };
+
+    class ConnectionError :
+      public Exception {
+    public:
+      /** Construct a Pololu device connection error
+        */
+      ConnectionError();
+    };
+
     /** Construct a Pololu device
       */
     Device(const Device& src);
@@ -43,6 +104,10 @@ namespace Pololu {
       */
     virtual ~Device();
 
+    /** Access the name of the Pololu device
+      */
+    virtual std::string getName() const = 0;
+
     /** Access the vendor ID of the Pololu device
       */
     size_t getVendorId() const;
@@ -50,17 +115,15 @@ namespace Pololu {
       */
     size_t getProductId() const;
 
-    /** Access the type name of the Pololu device
-      */
-    virtual std::string getTypeName() const = 0;
-    /** Access the full name of the Pololu device
-      */
-    virtual std::string getFullName() const = 0;
-
     /** Access the interface of the Pololu device
       */
     void setInterface(const Pointer<Interface>& interface);
     const Pointer<Interface>& getInterface() const;
+
+    /** Access the protocol of the Pololu device
+      */
+    virtual const Protocol& getProtocol(const std::string&
+      typeName) const = 0;
 
     /** Pololu device assignments
       */
@@ -68,7 +131,22 @@ namespace Pololu {
 
     /** Clone the Pololu device
       */
-    virtual Pointer<Device> clone() const = 0;
+    virtual Device* clone() const = 0;
+
+    /** Connect the Pololu device
+      */
+    void connect();
+    /** Disconnect the Pololu device
+      */
+    void disconnect();
+
+    /** Send the specified request to the Pololu device
+      */
+    void send(Request& request);
+
+    /** Pololu device queries
+      */
+    bool isConnected();
 
     /** Write the device to the given stream
       */
@@ -85,7 +163,9 @@ namespace Pololu {
   };
 };
 
-std::ostream& operator<<(std::ostream& stream, const Pololu::Device&
-  device);
+std::ostream& operator<<(std::ostream& stream, const
+  Pololu::Device& device);
+std::ostream& operator<<(std::ostream& stream, const
+  Pololu::Device::FirmwareVersion& version);
 
 #endif

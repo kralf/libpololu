@@ -27,11 +27,13 @@
 
 #include <map>
 
+#include "base/object.h"
 #include "base/pointer.h"
 #include "base/exception.h"
 
 namespace Pololu {
-  template <class C> class Factory {
+  template <class C> class Factory :
+    public Object {
   public:
     /** Types and non-static subclasses
       */

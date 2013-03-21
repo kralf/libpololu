@@ -53,9 +53,15 @@ namespace Pololu {
     /** Access the Pololu object's number of references
       */
     size_t getNumReferences() const;
+
+    /** Pololu object queries
+      */
+    template <class C> bool isA() const;
   private:
     size_t numReferences;
   };
 };
+
+#include "base/object.tpp"
 
 #endif

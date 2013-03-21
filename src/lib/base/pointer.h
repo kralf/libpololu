@@ -40,6 +40,14 @@ namespace Pololu {
       NullError();
     };
 
+    class TypeError :
+      public Exception {
+    public:
+      /** Construct a pointer type error
+        */
+      TypeError(const std::string& typeName);
+    };
+
     /** Construct a Pololu pointer
       */
     Pointer(C* instance = 0);
@@ -56,8 +64,9 @@ namespace Pololu {
 
     /** Pololu pointer conversions
       */
-    virtual C* operator->() const;
-    virtual C& operator*() const;
+    C* operator->() const;
+    C& operator*() const;
+    template <class D> Pointer<D> typeCast() const;
 
     /** Pololu pointer comparisons
       */

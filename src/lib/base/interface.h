@@ -25,8 +25,12 @@
   * \brief Abstract Pololu communication interface
   */
 
+#include <vector>
+
 #include "base/object.h"
 #include "base/exception.h"
+#include "base/pointer.h"
+#include "base/request.h"
 
 namespace Pololu {
   class Device;
@@ -36,28 +40,20 @@ namespace Pololu {
   public:
     /** Types and non-static subclasses
       */
-    class ConnectionError :
+    class OperationError :
       public Exception {
     public:
-      /** Construct an interface connection error
+      /** Construct an interface operation error
         */
-      ConnectionError(const std::string& address);
+      OperationError();
     };
 
-    class ReadError :
+    class RequestError :
       public Exception {
     public:
-      /** Construct an interface read error
+      /** Construct an interface request error
         */
-      ReadError(const std::string& address);
-    };
-
-    class WriteError :
-      public Exception {
-    public:
-      /** Construct an interface write error
-        */
-      WriteError(const std::string& address);
+      RequestError();
     };
 
     /** Construct a Pololu interface
@@ -68,46 +64,57 @@ namespace Pololu {
       */
     virtual ~Interface();
 
+    /** Access the name of the Pololu interface
+      */
+    virtual std::string getName() const = 0;
+
     /** Access the address of the Pololu interface
       */
     const std::string& getAddress() const;
-
-    /** Access the type name of the Pololu interface
+    /** Access the timeout of the Pololu interface
       */
-    virtual std::string getTypeName() const = 0;
-    /** Access the full name of the Pololu interface
-      */
-    virtual std::string getFullName() const = 0;
+    double getTimeout() const;
+    void setTimeout(double timeout);
 
     /** Pololu interface assignments
       */
     Interface& operator=(const Interface& src);
 
-    /** Connect the Pololu interface
+    /** Open the Pololu interface
       */
-    virtual void connect() = 0;
+    virtual void open() = 0;
+    /** Close the Pololu interface
+      */
+    virtual void close() = 0;
 
-    /** Disconnect the Pololu interface
+    /** Transfer the specified request via the interface
       */
-    virtual void disconnect() = 0;
+    virtual void transfer(Request& request) = 0;
 
     /** Pololu interface queries
       */
-    virtual bool isConnected() const = 0;
+    virtual bool isOpen() const = 0;
 
     /** Write the interface to the given stream
       */
     void write(std::ostream& stream) const;
+
+    /** Discover the Pololu device connected by the interface
+      */
+    virtual Pointer<Device> discoverDevice() const = 0;
   protected:
     std::string address;
+    double timeout;
 
     /** Construct a Pololu interface
       */
-    Interface(const std::string& address = "");
+    Interface(const std::string& address = "", double timeout = 1e-2);
   };
 };
 
 std::ostream& operator<<(std::ostream& stream, const Pololu::Interface&
   interface);
+
+#include "base/device.h"
 
 #endif
