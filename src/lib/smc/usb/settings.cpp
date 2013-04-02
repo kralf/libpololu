@@ -236,7 +236,7 @@ void Pololu::Smc::Usb::Settings::write(std::ostream& stream) const {
   document["PwmMode"] = Singleton<PwmModes>::getInstance()[(PwmMode)pwmMode];
   document["PwmPeriodFactor"] = pwmPeriodFactor;
   document["MixingMode"] = Singleton<MixingModes>::getInstance()[
-    (MixingMode)  mixingMode];
+    (MixingMode)mixingMode];
   document["PulsePeriod/Min"] = minPulsePeriod;
   document["PulsePeriod/Max"] = maxPulsePeriod;
   document["RcTimeout"] = rcTimeout;

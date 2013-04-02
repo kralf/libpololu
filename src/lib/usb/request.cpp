@@ -23,6 +23,7 @@
 #include "base/singleton.h"
 
 #include "request.h"
+#include "error.h"
 
 /*****************************************************************************/
 /* Constructors and Destructor                                               */
@@ -177,4 +178,22 @@ Pololu::Usb::Request& Pololu::Usb::Request::operator=(const Request& src) {
   data = src.data;
 
   return *this;
+}
+
+void Pololu::Usb::Request::transfer(libusb_device_handle* handle,
+    std::vector<unsigned char>& data, double timeout) {
+  transfer(handle, getRequestType(), request, value, index, data, timeout);
+}
+
+void Pololu::Usb::Request::transfer(libusb_device_handle* handle,
+    unsigned char requestType, unsigned char request, unsigned short value,
+    unsigned short index,  std::vector<unsigned char>& data, double timeout) {
+  unsigned char* requestData = 0;
+  unsigned short requestLength = data.size();
+
+  if (requestLength)
+    requestData = &data[0];
+
+  Error::assert(libusb_control_transfer(handle, requestType, request,
+    value, index, requestData, requestLength, timeout*1e3));
 }

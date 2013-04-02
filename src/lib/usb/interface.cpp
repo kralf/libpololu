@@ -205,17 +205,8 @@ void Pololu::Usb::Interface::close() {
 
 void Pololu::Usb::Interface::transfer(Request& request) {
   if (handle) {
-    unsigned char* data = 0;
-    unsigned short length = request.data.size();
-
-    if (length)
-      data = &request.data[0];
-
     Error::assert(libusb_claim_interface(handle, 0));
-    Error::assert(libusb_control_transfer(handle, request.getRequestType(),
-      request.request, request.value, request.index, data, length,
-      timeout*1e3));
-
+    request.transfer(handle, request.data, timeout);
     Error::assert(libusb_release_interface(handle, 0));
   }
   else

@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <map>
+#include <list>
 
 #include "config/parameter.h"
 
@@ -81,10 +82,12 @@ namespace Pololu {
         */
       const std::string& getName() const;
 
-      /** Access the subsection at the specified location
+      /** Access the subsections at the specified location
         */
       Section& getSection(const std::string& location);
       const Section& getSection(const std::string& location) const;
+      std::list<const Section*> getSections(const std::string&
+        location) const;
 
       Section& operator()(const std::string& location);
       const Section& operator()(const std::string& location) const;
@@ -118,6 +121,7 @@ namespace Pololu {
 
       /** Pololu configuration section manipulations
         */
+      Section& addSection(const std::string& name);
       Section& removeSection(const std::string& name);
       Section& removeParameter(const std::string& name);
 
@@ -132,7 +136,7 @@ namespace Pololu {
     protected:
       std::string name;
 
-      std::map<std::string, Section> sections;
+      std::multimap<std::string, Section> sections;
       std::map<std::string, Parameter> parameters;
 
       /** Pololu configuration section conversions

@@ -38,6 +38,9 @@ Pololu::Device::FirmwareVersion::FirmwareVersion(const FirmwareVersion& src) :
 Pololu::Device::FirmwareVersion::~FirmwareVersion() {
 }
 
+Pololu::Device::Protocols::Protocols() {
+}
+
 Pololu::Device::InterfaceError::InterfaceError() :
   Exception("Invalid or missing interface") {
 }
@@ -76,6 +79,15 @@ size_t Pololu::Device::FirmwareVersion::getMinor() const {
   return minor;
 }
 
+const Pololu::Protocol& Pololu::Device::Protocols::operator[](const
+    std::string& typeName) const {
+  const_iterator it = find(typeName);
+  if (it != end())
+    return *(it->second);
+  else
+    throw ProtocolError(typeName);
+}
+
 size_t Pololu::Device::getVendorId() const {
   return vendorId;
 }
@@ -93,6 +105,11 @@ const Pololu::Pointer<Pololu::Interface>& Pololu::Device::getInterface()
   return interface;
 }
 
+const Pololu::Protocol& Pololu::Device::getProtocol(const std::string&
+    typeName) const {
+  return getProtocols()[typeName];
+}
+
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
@@ -107,6 +124,14 @@ Pololu::Device::FirmwareVersion& Pololu::Device::FirmwareVersion::operator=(
 
 void Pololu::Device::FirmwareVersion::write(std::ostream& stream) const {
   stream << major << "." << minor;
+}
+
+void Pololu::Device::Protocols::write(std::ostream& stream) const {
+  for (const_iterator it = begin(); it != end(); ++it) {
+    if (it != begin())
+      stream << std::endl;
+    stream << it->first;
+  }
 }
 
 Pololu::Device& Pololu::Device::operator=(const Pololu::Device& src) {
@@ -148,14 +173,20 @@ void Pololu::Device::write(std::ostream& stream) const {
   stream << getName();
 }
 
+std::ostream& operator<<(std::ostream& stream, const Pololu::Device&
+    device) {
+  device.write(stream);
+  return stream;
+}
+
 std::ostream& operator<<(std::ostream& stream, const
     Pololu::Device::FirmwareVersion& version) {
   version.write(stream);
   return stream;
 }
 
-std::ostream& operator<<(std::ostream& stream, const Pololu::Device&
-    device) {
-  device.write(stream);
+std::ostream& operator<<(std::ostream& stream, const
+    Pololu::Device::Protocols& protocols) {
+  protocols.write(stream);
   return stream;
 }

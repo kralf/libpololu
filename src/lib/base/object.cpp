@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "base/memory.h"
+
 #include "object.h"
 
 /*****************************************************************************/
@@ -29,12 +31,14 @@ Pololu::Object::DestructionError::DestructionError() :
 }
 
 Pololu::Object::Object() :
-  numReferences(0) {
+  numReferences(Memory::inStack(this)) {
 }
 
 Pololu::Object::~Object() {
-  if (numReferences)
-    throw DestructionError();
+  if (Memory::inStack(this))
+    --numReferences;
+
+  Memory::assertDestruction(this);
 }
 
 /*****************************************************************************/
@@ -43,4 +47,12 @@ Pololu::Object::~Object() {
 
 size_t Pololu::Object::getNumReferences() const {
   return numReferences;
+}
+
+/*****************************************************************************/
+/* Methods                                                                   */
+/*****************************************************************************/
+
+bool Pololu::Object::inStack() const {
+  return Memory::inStack(this);
 }

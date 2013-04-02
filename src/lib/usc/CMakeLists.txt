@@ -1,2 +1,2 @@
-remake_add_library(usc LINK config)
-remake_add_headers(INSTALL usc)
+remake_add_library(usc RECURSE LINK config script)
+remake_add_headers(RECURSE INSTALL usc)

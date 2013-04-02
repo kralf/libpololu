@@ -30,6 +30,7 @@
 
 namespace Pololu {
   class Object {
+  friend class Memory;
   template <class> friend class Pointer;
   public:
     /** Types and non-static subclasses
@@ -56,6 +57,7 @@ namespace Pololu {
 
     /** Pololu object queries
       */
+    bool inStack() const;
     template <class C> bool isA() const;
   private:
     size_t numReferences;

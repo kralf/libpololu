@@ -25,6 +25,7 @@
   * \brief Abstract Pololu device
   */
 
+#include <map>
 #include <iostream>
 
 #include "base/object.h"
@@ -70,6 +71,24 @@ namespace Pololu {
     protected:
       size_t major;
       size_t minor;
+    };
+
+    class Protocols :
+      public std::map<std::string, Pointer<Protocol> > {
+    public:
+      /** Construct a Pololu device protocols object
+        */
+      Protocols();
+
+      /** Access the Pololu device protocol with the specified type
+        * name
+        */
+      const Protocol& operator[](const std::string& typeName) const;
+      using std::map<std::string, Pointer<Protocol> >::operator[];
+
+      /** Write the device protocols to the given stream
+        */
+      void write(std::ostream& stream) const;
     };
 
     class InterfaceError :
@@ -120,10 +139,12 @@ namespace Pololu {
     void setInterface(const Pointer<Interface>& interface);
     const Pointer<Interface>& getInterface() const;
 
-    /** Access the protocol of the Pololu device
+    /** Access the protocols of the Pololu device
       */
-    virtual const Protocol& getProtocol(const std::string&
-      typeName) const = 0;
+    virtual const Protocols& getProtocols() const = 0;
+    /** Access the protocol with the specified type name
+      */
+    const Protocol& getProtocol(const std::string& typeName) const;
 
     /** Pololu device assignments
       */
@@ -167,5 +188,7 @@ std::ostream& operator<<(std::ostream& stream, const
   Pololu::Device& device);
 std::ostream& operator<<(std::ostream& stream, const
   Pololu::Device::FirmwareVersion& version);
+std::ostream& operator<<(std::ostream& stream, const
+  Pololu::Device::Protocols& protocols);
 
 #endif

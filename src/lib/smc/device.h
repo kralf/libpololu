@@ -116,17 +116,11 @@ namespace Pololu {
       };
 
       class Protocols :
-        public std::map<std::string, Pointer<Protocol> > {
+        public Pololu::Device::Protocols {
       public:
         /** Construct a simple motor controller protocols object
           */
         Protocols();
-
-        /** Access the simple motor controller protocol with the
-          * specified type name
-          */
-        const Protocol& operator[](const std::string& typeName) const;
-        using std::map<std::string, Pointer<Protocol> >::operator[];
       };
 
       /** Construct a Pololu simple motor controller device
@@ -139,7 +133,7 @@ namespace Pololu {
       virtual ~Device();
 
       std::string getName() const;
-      const Protocol& getProtocol(const std::string& typeName) const;
+      const Protocols& getProtocols() const;
 
       /** Pololu simple motor controller device assignments
         */

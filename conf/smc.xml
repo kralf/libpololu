@@ -42,17 +42,17 @@
   </Rc2>
   <Analog1>
     <AlternateUse>LimitForward</AlternateUse>
-    <PinMode>Floating</PinMode>
-    <Invert>false</Invert>
+    <PinMode>PullUp</PinMode>
+    <Invert>true</Invert>
     <ScalingDegree>0</ScalingDegree>
     <Error Min="0" Max="4095" />
     <Input Min="40" Max="4055" />
     <InputNeutral Min="2015" Max="2080" />
   </Analog1>
   <Analog2>
-    <AlternateUse>None</AlternateUse>
-    <PinMode>Floating</PinMode>
-    <Invert>false</Invert>
+    <AlternateUse>LimitReverse</AlternateUse>
+    <PinMode>PullUp</PinMode>
+    <Invert>true</Invert>
     <ScalingDegree>0</ScalingDegree>
     <Error Min="0" Max="4095" />
     <Input Min="40" Max="4055" />

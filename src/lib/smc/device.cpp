@@ -131,22 +131,13 @@ std::string Pololu::Smc::Device::Names::operator[](Type productId) const {
     return "Pololu Simple High-Power Motor Controller (Unknown)";
 }
 
-const Pololu::Protocol& Pololu::Smc::Device::Protocols::operator[](const
-    std::string& typeName) const {
-  const_iterator it = find(typeName);
-  if (it != end())
-    return *(it->second);
-  else
-    throw ProtocolError(typeName);
-}
-
 std::string Pololu::Smc::Device::getName() const {
   return Singleton<Names>::getInstance()[(Type)productId];
 }
 
-const Pololu::Protocol& Pololu::Smc::Device::getProtocol(const std::string&
-    typeName) const {
-  return *Singleton<Protocols>::getInstance()[typeName];
+const Pololu::Smc::Device::Protocols& Pololu::Smc::Device::getProtocols()
+    const {
+  return Singleton<Protocols>::getInstance();
 }
 
 /*****************************************************************************/

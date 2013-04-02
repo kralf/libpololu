@@ -44,6 +44,8 @@ int main(int argc, char **argv) {
     "Communication protocol", "PROTOCOL", "Usb");
   application["timeout"] = Command::Argument(
     "Request timeout in ms", "TIMEOUT", "10");
+  application["list-protocols"] = Command::Argument(
+    "List protocols and exit", "", false);
   application["list-requests"] = Command::Argument(
     "List protocol requests and exit", "", false);
 
@@ -60,6 +62,11 @@ int main(int argc, char **argv) {
       device = createDevice(application["device"].getValue());
 
     if (!device.isNull()) {
+      if (application["list-protocols"].getValue<bool>()) {
+        std::cout << device->getProtocols() << std::endl;
+        return 0;
+      }
+
       const Protocol& protocol = device->getProtocol(
         application["protocol"].getValue());
 

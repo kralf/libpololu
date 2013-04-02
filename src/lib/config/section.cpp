@@ -74,7 +74,7 @@ Pololu::Configuration::Section& Pololu::Configuration::Section::getSection(
   std::map<std::string, Section>::iterator it = sections.find(name);
 
   if (it == sections.end())
-    it = sections.insert(std::make_pair(name, name)).first;
+    it = sections.insert(std::make_pair(name, name));
 
   if (sublocation.empty())
     return it->second;
@@ -103,6 +103,37 @@ const Pololu::Configuration::Section&
   }
   else
     throw SectionError(name);
+}
+
+std::list<const Pololu::Configuration::Section*>
+    Pololu::Configuration::Section::getSections(const std::string&
+    location) const {
+  std::list<const Section*> sections;
+  std::string name = location, sublocation;
+
+  int i = location.find("/");
+  if (i >= 0) {
+    name = location.substr(0, i);
+    sublocation = location.substr(i+1);
+  }
+
+  std::pair<std::map<std::string, Section>::const_iterator,
+    std::map<std::string, Section>::const_iterator> range =
+    this->sections.equal_range(name);
+
+  for (std::map<std::string, Section>::const_iterator it = range.first;
+      it != range.second; ++it) {
+    if (!sublocation.empty()) {
+      std::list<const Section*> subsections =
+        it->second.getSections(sublocation);
+      sections.insert(sections.end(), subsections.begin(),
+        subsections.end());
+    }
+    else
+      sections.push_back(const_cast<Section*>(&it->second));
+  }
+
+  return sections;
 }
 
 Pololu::Configuration::Section& Pololu::Configuration::Section::operator()(
@@ -212,6 +243,11 @@ void Pololu::Configuration::Section::write(std::ostream& stream) const {
   document.write_to_stream_formatted(stream);
 }
 
+Pololu::Configuration::Section& Pololu::Configuration::Section::addSection(
+    const std::string& name) {
+  return sections.insert(std::make_pair(name, name))->second;
+}
+
 Pololu::Configuration::Section& Pololu::Configuration::Section::removeSection(
     const std::string& name) {
   std::map<std::string, Section>::iterator it = sections.find(name);
@@ -270,7 +306,7 @@ void Pololu::Configuration::Section::fromXML(const xmlpp::Element& element) {
     const xmlpp::TextNode* text = child->get_child_text();
 
     if (!text || text->is_white_space())
-      (*this)(child->get_name()).fromXML(*child);
+      addSection(child->get_name()).fromXML(*child);
     else
       (*this)[child->get_name()] = text->get_content();
   }

@@ -184,7 +184,7 @@ namespace Pololu {
           */
         Settings();
 
-        /** Read the settings to the given stream
+        /** Read the settings from the given stream
           */
         void read(std::istream& stream);
         /** Write the settings to the given stream

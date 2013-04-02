@@ -37,7 +37,7 @@ template <typename T> bool Pololu::Configuration::Section::query(const
       it = parameters.find(name);
 
     if (it != parameters.end()) {
-      value = it->second;
+      value = it->second.getValue<T>();
       return true;
     }
     else
@@ -81,7 +81,7 @@ template <typename T, typename U> bool Pololu::Configuration::Section::query(
       it = sections.find(name);
 
     if (it != sections.end())
-      return it->second.query(sublocation, value);
+      return it->second.query(sublocation, value, values);
     else
       return false;
   }

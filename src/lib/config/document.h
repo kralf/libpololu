@@ -54,6 +54,9 @@ namespace Pololu {
         */
       virtual ~Document();
 
+      /** Access the name of the document
+        */
+      void setName(const std::string& name);
       /** Access the version of the configuration document
         */
       const std::string& getVersion() const;

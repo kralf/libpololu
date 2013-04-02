@@ -77,6 +77,13 @@ void Pololu::Serializable<T>::Traits<U, D>::read(std::istream& stream,
 
 template <typename T>
 template <size_t D>
+void Pololu::Serializable<T>::Traits<std::string, D>::read(std::istream&
+    stream, std::string& value) {
+  stream >> value;
+}
+
+template <typename T>
+template <size_t D>
 void Pololu::Serializable<T>::Traits<unsigned char, D>::read(std::istream&
     stream, unsigned char& value) {
   unsigned short shortValue;
@@ -85,6 +92,49 @@ void Pololu::Serializable<T>::Traits<unsigned char, D>::read(std::istream&
     value = shortValue;
   else
     throw DeserializationError();
+}
+
+template <typename T>
+template <size_t D>
+void Pololu::Serializable<T>::Traits<std::vector<unsigned char>, D>::read(
+    std::istream& stream, std::vector<unsigned char>& value) {
+  char charValue;
+
+  value.clear();
+  while (!stream.eof()) {
+    stream.get(charValue);
+    value.push_back(charValue);
+  }
+}
+
+template <typename T>
+template <typename K, typename V, size_t D>
+void Pololu::Serializable<T>::Traits<std::map<K, V>, D>::read(
+    std::istream& stream, std::map<K, V>& value) {
+  value.clear();
+
+  char kstring[256];
+  std::string vstring;
+
+  do {
+    K key;
+    V val;
+
+    stream.getline(kstring, sizeof(kstring), '=');
+    std::istringstream kstream(kstring);
+    kstream >> key;
+
+    stream >> vstring;
+    std::istringstream vstream;
+    if (*vstring.rbegin() == ',')
+      vstream.str(vstring.substr(0, vstring.length()-1));
+    else
+      vstream.str(vstring);
+    vstream >> val;
+
+    value.insert(std::make_pair(key, val));
+  }
+  while (*vstring.rbegin() == ',');
 }
 
 template <typename T>
@@ -118,9 +168,36 @@ void Pololu::Serializable<T>::Traits<U, D>::write(std::ostream& stream,
 
 template <typename T>
 template <size_t D>
+void Pololu::Serializable<T>::Traits<std::string, D>::write(std::ostream&
+    stream, const std::string& value) {
+  stream << value;
+}
+
+template <typename T>
+template <size_t D>
 void Pololu::Serializable<T>::Traits<unsigned char, D>::write(std::ostream&
     stream, const unsigned char& value) {
   stream << (unsigned short)value;
+}
+
+template <typename T>
+template <size_t D>
+void Pololu::Serializable<T>::Traits<std::vector<unsigned char>, D>::write(
+    std::ostream& stream, const std::vector<unsigned char>& value) {
+  if (!value.empty())
+    stream.write(reinterpret_cast<const char*>(&value[0]), value.size());
+}
+
+template <typename T>
+template <typename K, typename V, size_t D>
+void Pololu::Serializable<T>::Traits<std::map<K, V>, D>::write(
+    std::ostream& stream, const std::map<K, V>& value) {
+  for (typename std::map<K, V>::const_iterator it = value.begin();
+      it != value.end(); ++it) {
+    if (it != value.begin())
+      stream << ", ";
+    stream << it->first << '=' << it->second;
+  }
 }
 
 template <typename T>

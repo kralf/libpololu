@@ -53,6 +53,10 @@ Pololu::Configuration::Document::~Document() {
 /* Accessors                                                                 */
 /*****************************************************************************/
 
+void Pololu::Configuration::Document::setName(const std::string& name) {
+  this->name = name;
+}
+
 const std::string& Pololu::Configuration::Document::getVersion() const {
   return version;
 }

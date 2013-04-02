@@ -1,3 +1,12 @@
+libpololu (0.1-5) lucid; urgency=low
+
+  * Revised some base classes
+  * Implemented:
+    + Pololu USB servo controller over native USB protocol (tested for the
+      mini controller)
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 02 Apr 2013 16:16:00 +0100
+
 libpololu (0.1-4) lucid; urgency=low
 
   * Revised some base classes

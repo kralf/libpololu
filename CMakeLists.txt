@@ -20,7 +20,7 @@ remake_doc(
 )
 
 remake_pack_deb(
-  libusb libxml++-2.6
+  libusb-1.0-0 libxml[+][+]2.6-2
 )
 remake_pack_deb(
   COMPONENT utils
@@ -41,6 +41,13 @@ remake_distribute_deb(
   DISTRIBUTION lucid
   SECTION libs
   UPLOAD ppa:kralf/asl
-  DEPENDS remake libusb-dev libxml++2.6-dev doxygen
+  DEPENDS remake libusb-dev libxml++2.6-dev pkg-config doxygen
+  PASS CMAKE_BUILD_TYPE LIBPOLOLU_SUBVERSION_REVISION
+)
+remake_distribute_deb(
+  DISTRIBUTION precise
+  SECTION libs
+  UPLOAD ppa:kralf/asl
+  DEPENDS remake libusb-dev libxml++2.6-dev pkg-config doxygen
   PASS CMAKE_BUILD_TYPE LIBPOLOLU_SUBVERSION_REVISION
 )

@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <map>
 
 #include "base/object.h"
@@ -60,9 +61,27 @@ namespace Pololu {
       static void write(std::ostream& stream, const U& value);
     };
 
+    template <size_t D> struct Traits<std::string, D> {
+      static void read(std::istream& stream, std::string& value);
+      static void write(std::ostream& stream, const std::string& value);
+    };
+
     template <size_t D> struct Traits<unsigned char, D> {
       static void read(std::istream& stream, unsigned char& value);
       static void write(std::ostream& stream, const unsigned char& value);
+    };
+
+    template <size_t D> struct Traits<std::vector<unsigned char>, D> {
+      static void read(std::istream& stream,
+        std::vector<unsigned char>& value);
+      static void write(std::ostream& stream, const
+        std::vector<unsigned char>& value);
+    };
+
+    template <typename K, typename V, size_t D>
+        struct Traits<std::map<K, V>, D> {
+      static void read(std::istream& stream, std::map<K, V>& value);
+      static void write(std::ostream& stream, const std::map<K, V>& value);
     };
 
     /** Construct a Pololu serializable

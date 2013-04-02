@@ -30,6 +30,8 @@
 
 #include "base/request.h"
 
+struct libusb_device_handle;
+
 namespace Pololu {
   namespace Usb {
     class Request :
@@ -150,6 +152,16 @@ namespace Pololu {
       unsigned short index;
 
       std::vector<unsigned char> data;
+
+      /** Pololu USB request operations
+        */
+      virtual void transfer(libusb_device_handle* handle,
+        std::vector<unsigned char>& data, double timeout);
+
+      static void transfer(libusb_device_handle* handle, unsigned char
+        requestType, unsigned char request, unsigned short value,
+        unsigned short index,  std::vector<unsigned char>& data,
+        double timeout);
     };
   };
 };
