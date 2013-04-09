@@ -41,14 +41,14 @@ remake_pack_deb(
 remake_distribute_deb(
   DISTRIBUTION lucid
   SECTION libs
-  UPLOAD ppa:kralf/naro
-  DEPENDS remake libusb-dev libxml++2.6-dev pkg-config doxygen
+  UPLOAD ppa:kralf/asl
+  DEPENDS remake libusb-1.0-0-dev libxml++2.6-dev pkg-config doxygen
   PASS CMAKE_BUILD_TYPE LIBPOLOLU_GIT_REVISION
 )
 remake_distribute_deb(
   DISTRIBUTION precise
   SECTION libs
-  UPLOAD ppa:kralf/naro
-  DEPENDS remake libusb-dev libxml++2.6-dev pkg-config doxygen
+  UPLOAD ppa:kralf/asl
+  DEPENDS remake libusb-1.0-0-dev libxml++2.6-dev pkg-config doxygen
   PASS CMAKE_BUILD_TYPE LIBPOLOLU_GIT_REVISION
 )

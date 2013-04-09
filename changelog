@@ -1,3 +1,10 @@
+libpololu (0.1-9) lucid; urgency=low
+
+  * Fixed build dependencies (libusb-dev)
+  * Reverted to standard ppa for further test builds
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 09 Apr 2013 14:16:00 +0100
+
 libpololu (0.1-8) lucid; urgency=low
 
   * Added binary dependency for development package
