@@ -1,3 +1,10 @@
+libpololu (0.1-6) lucid; urgency=low
+
+  * Adapted package dependencies for Debian wheezy on Raspberry Pi
+  * Changed distribution ppa
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 08 Apr 2013 17:12:00 +0100
+
 libpololu (0.1-5) lucid; urgency=low
 
   * Revised some base classes
