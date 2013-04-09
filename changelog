@@ -1,3 +1,10 @@
+libpololu (0.1-7) lucid; urgency=low
+
+  * Fixed distribution macro in top-level CMakeLists.txt to pass the
+    Git revision instead of the Subversion revision
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 09 Apr 2013 13:09:00 +0100
+
 libpololu (0.1-6) lucid; urgency=low
 
   * Adapted package dependencies for Debian wheezy on Raspberry Pi

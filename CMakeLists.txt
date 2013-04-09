@@ -20,12 +20,12 @@ remake_doc(
 )
 
 remake_pack_deb(
-  libusb-1.0-0[:a-z]* libxml[+][+]2.6-2
+  DEPENDS libusb-1.0-0[:a-z]* libxml[+][+]2.6-2
 )
 remake_pack_deb(
   COMPONENT utils
   DESCRIPTION "utilities"
-  libpololu
+  DEPENDS libpololu
 )
 remake_pack_deb(
   COMPONENT dev
@@ -42,12 +42,12 @@ remake_distribute_deb(
   SECTION libs
   UPLOAD ppa:kralf/naro
   DEPENDS remake libusb-dev libxml++2.6-dev pkg-config doxygen
-  PASS CMAKE_BUILD_TYPE LIBPOLOLU_SUBVERSION_REVISION
+  PASS CMAKE_BUILD_TYPE LIBPOLOLU_GIT_REVISION
 )
 remake_distribute_deb(
   DISTRIBUTION precise
   SECTION libs
   UPLOAD ppa:kralf/naro
   DEPENDS remake libusb-dev libxml++2.6-dev pkg-config doxygen
-  PASS CMAKE_BUILD_TYPE LIBPOLOLU_SUBVERSION_REVISION
+  PASS CMAKE_BUILD_TYPE LIBPOLOLU_GIT_REVISION
 )
