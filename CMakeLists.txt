@@ -30,6 +30,7 @@ remake_pack_deb(
 remake_pack_deb(
   COMPONENT dev
   DESCRIPTION "development headers"
+  DEPENDS libpololu
 )
 remake_pack_deb(
   ARCH all
