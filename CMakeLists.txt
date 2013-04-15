@@ -54,7 +54,7 @@ remake_distribute_deb(
 )
 remake_distribute_deb(
   DISTRIBUTION precise
-  ALIAS rpi
+  ALIAS raspbian
   ARCH armhf
   SECTION libs
   UPLOAD ppa:kralf/naro
