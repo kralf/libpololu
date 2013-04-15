@@ -52,3 +52,11 @@ remake_distribute_deb(
   DEPENDS remake libusb-1.0-0-dev libxml++2.6-dev pkg-config doxygen
   PASS CMAKE_BUILD_TYPE LIBPOLOLU_GIT_REVISION
 )
+remake_distribute_deb(
+  DISTRIBUTION precise
+  ALIAS rpi
+  SECTION libs
+  UPLOAD ppa:kralf/naro
+  DEPENDS remake libusb-1.0-0-dev libxml++2.6-dev pkg-config doxygen
+  PASS CMAKE_BUILD_TYPE LIBPOLOLU_GIT_REVISION
+)

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Ralf Kaestner                                   *
+ *   Copyright (C) 2013 by Ralf Kaestner                                   *
  *   ralf.kaestner@gmail.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -45,7 +45,7 @@ namespace Pololu {
     class DeallocationError :
       public Exception {
     public:
-      /** Constructor a memory deallocation error
+      /** Construct a memory deallocation error
         */
       DeallocationError();
     };
@@ -78,7 +78,7 @@ namespace Pololu {
   protected:
     static const void* stackBottom;
 
-    /** Constructor a Pololu memory management object
+    /** Construct a Pololu memory management object
       */
     Memory();
     /** Destroy a Pololu memory management object

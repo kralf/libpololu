@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004 by Ralf Kaestner                                   *
+ *   Copyright (C) 2013 by Ralf Kaestner                                   *
  *   ralf.kaestner@gmail.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,8 +27,6 @@
 /*****************************************************************************/
 
 const void* Pololu::Memory::stackBottom = 0;
-
-#include <iostream>
 
 void __attribute__((constructor)) create() {
   char firstStackVariable;

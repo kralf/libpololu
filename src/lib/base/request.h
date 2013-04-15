@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Ralf Kaestner and Luciano Spinello              *
+ *   Copyright (C) 2013 by Ralf Kaestner                                   *
  *   ralf.kaestner@gmail.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -34,6 +34,8 @@ namespace Pololu {
   class Request :
     public Object {
   public:
+    /** Types and non-static subclasses
+      */
     class ParameterRangeError :
       public Exception {
     public:
