@@ -55,6 +55,7 @@ remake_distribute_deb(
 remake_distribute_deb(
   DISTRIBUTION precise
   ALIAS rpi
+  ARCH armhf
   SECTION libs
   UPLOAD ppa:kralf/naro
   DEPENDS remake libusb-1.0-0-dev libxml++2.6-dev pkg-config doxygen
