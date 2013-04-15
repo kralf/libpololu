@@ -60,4 +60,5 @@ remake_distribute_deb(
   UPLOAD ppa:kralf/naro
   DEPENDS remake libusb-1.0-0-dev libxml++2.6-dev pkg-config doxygen
   PASS CMAKE_BUILD_TYPE LIBPOLOLU_GIT_REVISION
+  DEFINE LIBPOLOLU_EXTRA_CXX_FLAGS:STRING="-march=armv6 -mfpu=vfp -mfloat-abi=hard"
 )
