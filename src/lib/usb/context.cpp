@@ -18,8 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <cstdio>
 
+#include <libudev.h>
 #include <libusb.h>
 
 #include "base/singleton.h"
@@ -91,10 +96,28 @@ std::list<Pololu::Usb::Interface> Pololu::Usb::Context::getInterfaces()
 
 Pololu::Usb::Interface* Pololu::Usb::Context::getInterface(const
     std::string& address) const {
-  unsigned char deviceBus, deviceAddress;
   Interface* interface = 0;
+  std::string busAddress = address;
+  struct stat statBuffer;
 
-  if (sscanf(address.c_str(), "%hhu:%hhu", &deviceBus, &deviceAddress) == 2) {
+  if (!stat(address.c_str(), &statBuffer) && S_ISCHR(statBuffer.st_mode)) {
+    struct udev* udev = 0;
+    struct udev_device* dev = 0;
+
+    udev = udev_new();
+    dev = udev_device_new_from_devnum(udev, 'c', statBuffer.st_rdev);
+
+    if (dev) {
+      busAddress = udev_device_get_sysattr_value(dev, "busnum");
+      busAddress += ':';
+      busAddress += udev_device_get_sysattr_value(dev, "devnum");
+    }
+
+    udev_unref(udev);
+  }
+
+  unsigned char deviceBus, deviceAddress;
+  if (sscanf(busAddress.c_str(), "%hhu:%hhu", &deviceBus, &deviceAddress) == 2) {
     libusb_device** devices;
     size_t numDevices = libusb_get_device_list(context, &devices);
     for (int i = 0; i < numDevices; ++i)
