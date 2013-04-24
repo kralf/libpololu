@@ -1,3 +1,9 @@
+libpololu (0.1-15) lucid; urgency=low
+
+  * Fixed binary dependencies
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 24 Apr 2013 15:11:00 +0100
+
 libpololu (0.1-14) lucid; urgency=low
 
   * USB context now takes alternative character device as address string
