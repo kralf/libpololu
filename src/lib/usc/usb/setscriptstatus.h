@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_SETSCRIPTSTATUS_H
 #define POLOLU_USC_USB_SETSCRIPTSTATUS_H
 
-/** \file setscriptstatus.h
-  * \brief USB servo controller set script status request (USB protocol)
+/** \brief USB servo controller set script status request (USB protocol)
   */
 
 #include "usb/request.h"

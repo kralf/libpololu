@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_MINI_VARIABLES_H
 #define POLOLU_USC_USB_MINI_VARIABLES_H
 
-/** \file variables.h
-  * \brief Pololu USB mini servo controller variables (USB protocol)
+/** \brief Pololu USB mini servo controller variables (USB protocol)
   */
 
 #include <map>

@@ -21,8 +21,7 @@
 #ifndef POLOLU_H
 #define POLOLU_H
 
-/** \file pololu.h
-  * \brief Pololu convenience functions
+/** \brief Pololu convenience functions
   */
 
 #include <list>

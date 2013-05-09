@@ -21,8 +21,7 @@
 #ifndef POLOLU_USB_REQUEST_H
 #define POLOLU_USB_REQUEST_H
 
-/** \file request.h
-  * \brief Pololu USB request
+/** \brief Pololu USB request
   */
 
 #include <vector>

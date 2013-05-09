@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_SETSPEED_H
 #define POLOLU_SMC_USB_SETSPEED_H
 
-/** \file setspeed.h
-  * \brief Simple motor controller set speed request (USB protocol)
+/** \brief Simple motor controller set speed request (USB protocol)
   */
 
 #include <map>

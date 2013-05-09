@@ -21,8 +21,7 @@
 #ifndef POLOLU_SERIAL_CONTEXT_H
 #define POLOLU_SERIAL_CONTEXT_H
 
-/** \file context.h
-  * \brief Pololu Serial (TTL/USB) communication context
+/** \brief Pololu Serial (TTL/USB) communication context
   */
 
 #include "base/context.h"

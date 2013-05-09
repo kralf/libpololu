@@ -21,8 +21,7 @@
 #ifndef POLOLU_INTERFACE_H
 #define POLOLU_INTERFACE_H
 
-/** \file interface.h
-  * \brief Abstract Pololu communication interface
+/** \brief Abstract Pololu communication interface
   */
 
 #include <vector>

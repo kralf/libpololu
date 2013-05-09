@@ -21,8 +21,7 @@
 #ifndef POLOLU_POINTER_H
 #define POLOLU_POINTER_H
 
-/** \file pointer.h
-  * \brief Templated Pololu pointer
+/** \brief Templated Pololu pointer
   */
 
 #include "base/exception.h"

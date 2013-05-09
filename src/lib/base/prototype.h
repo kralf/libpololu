@@ -21,8 +21,7 @@
 #ifndef POLOLU_PROTOTYPE_H
 #define POLOLU_PROTOTYPE_H
 
-/** \file prototype.h
-  * \brief Templated Pololu prototype
+/** \brief Templated Pololu prototype
   */
 
 #include "base/type.h"

@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_STARTBOOTLOADER_H
 #define POLOLU_SMC_USB_STARTBOOTLOADER_H
 
-/** \file startbootloader.h
-  * \brief Simple motor controller start bootloader request (USB protocol)
+/** \brief Simple motor controller start bootloader request (USB protocol)
   */
 
 #include "usb/request.h"

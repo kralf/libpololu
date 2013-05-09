@@ -21,8 +21,7 @@
 #ifndef POLOLU_EXCEPTION_H
 #define POLOLU_EXCEPTION_H
 
-/** \file exception.h
-  * \brief Pololu exception
+/** \brief Pololu exception
   */
 
 #include <stdexcept>

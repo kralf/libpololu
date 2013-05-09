@@ -21,8 +21,7 @@
 #ifndef POLOLU_CONFIG_PARAMETER_H
 #define POLOLU_CONFIG_PARAMETER_H
 
-/** \file parameter.h
-  * \brief Pololu configuration parameter
+/** \brief Pololu configuration parameter
   */
 
 #include <iostream>

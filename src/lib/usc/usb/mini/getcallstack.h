@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_MINI_GETCALLSTACK_H
 #define POLOLU_USC_USB_MINI_GETCALLSTACK_H
 
-/** \file getcallstack.h
-  * \brief USB mini servo controller get call stack request (USB protocol)
+/** \brief USB mini servo controller get call stack request (USB protocol)
   */
 
 #include "usb/request.h"

@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_RESTARTSCRIPTAT_H
 #define POLOLU_USC_USB_RESTARTSCRIPTAT_H
 
-/** \file erasescript.h
-  * \brief USB servo controller restart script at request (USB protocol)
+/** \brief USB servo controller restart script at request (USB protocol)
   */
 
 #include "usb/request.h"

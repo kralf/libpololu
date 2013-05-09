@@ -21,8 +21,7 @@
 #ifndef POLOLU_CONTEXT_H
 #define POLOLU_CONTEXT_H
 
-/** \file context.h
-  * \brief Abstract Pololu communication context
+/** \brief Abstract Pololu communication context
   */
 
 #include <list>

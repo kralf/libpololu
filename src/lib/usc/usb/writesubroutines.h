@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_WRITESUBROUTINES_H
 #define POLOLU_USC_USB_WRITESUBROUTINES_H
 
-/** \file writesubroutines.h
-  * \brief USB servo controller write subroutines request (USB protocol)
+/** \brief USB servo controller write subroutines request (USB protocol)
   */
 
 #include "script/subroutine.h"

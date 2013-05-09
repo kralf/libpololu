@@ -21,8 +21,7 @@
 #ifndef POLOLU_COMMAND_APPLICATION_H
 #define POLOLU_COMMAND_APPLICATION_H
 
-/** \file application.h
-  * \brief Pololu commandline application
+/** \brief Pololu commandline application
   */
 
 #include <vector>

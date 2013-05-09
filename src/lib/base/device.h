@@ -21,8 +21,7 @@
 #ifndef POLOLU_DEVICE_H
 #define POLOLU_DEVICE_H
 
-/** \file device.h
-  * \brief Abstract Pololu device
+/** \brief Abstract Pololu device
   */
 
 #include <map>

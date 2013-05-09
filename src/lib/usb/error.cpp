@@ -28,6 +28,23 @@
 /* Constructors and Destructor                                               */
 /*****************************************************************************/
 
+Pololu::Usb::Error::Codes::Codes() {
+  (*this)[LIBUSB_SUCCESS] = success;
+  (*this)[LIBUSB_ERROR_IO] = io;
+  (*this)[LIBUSB_ERROR_INVALID_PARAM] = parameter;
+  (*this)[LIBUSB_ERROR_ACCESS] = access;
+  (*this)[LIBUSB_ERROR_NO_DEVICE] = device;
+  (*this)[LIBUSB_ERROR_NOT_FOUND] = entity;
+  (*this)[LIBUSB_ERROR_BUSY] = busy;
+  (*this)[LIBUSB_ERROR_TIMEOUT] = timeout;
+  (*this)[LIBUSB_ERROR_OVERFLOW] = overflow;
+  (*this)[LIBUSB_ERROR_PIPE] = pipe;
+  (*this)[LIBUSB_ERROR_INTERRUPTED] = interrupt;
+  (*this)[LIBUSB_ERROR_NO_MEM] = memory;
+  (*this)[LIBUSB_ERROR_NOT_SUPPORTED] = support;
+  (*this)[LIBUSB_ERROR_OTHER] = other;
+}
+
 Pololu::Usb::Error::Descriptions::Descriptions() {
   (*this)[LIBUSB_SUCCESS] = "Success.";
   (*this)[LIBUSB_ERROR_IO] = "Input/output error.";
@@ -47,12 +64,27 @@ Pololu::Usb::Error::Descriptions::Descriptions() {
 
 Pololu::Usb::Error::Error(int error) :
   Exception("USB error: %s",
-    Singleton<Descriptions>::getInstance()[error].c_str()) {
+    Singleton<Descriptions>::getInstance()[error].c_str()),
+  code(Singleton<Codes>::getInstance()[error]) {
+}
+
+Pololu::Usb::Error::Error(const Error& src) :
+  Exception(src),
+  code(src.code) {
 }
 
 /*****************************************************************************/
 /* Accessors                                                                 */
 /*****************************************************************************/
+
+Pololu::Usb::Error::Code Pololu::Usb::Error::Codes::operator[](int error)
+    const {
+  const_iterator it = find(error);
+  if (it != end())
+    return it->second;
+  else
+    return unknown;
+}
 
 std::string Pololu::Usb::Error::Descriptions::operator[](int error) const {
   const_iterator it = find(error);
@@ -65,6 +97,21 @@ std::string Pololu::Usb::Error::Descriptions::operator[](int error) const {
 /*****************************************************************************/
 /* Methods                                                                   */
 /*****************************************************************************/
+
+Pololu::Usb::Error& Pololu::Usb::Error::operator=(const Error& src) {
+  Exception::operator=(src);
+  code = src.code;
+
+  return *this;
+}
+
+bool Pololu::Usb::Error::operator==(Code code) const {
+  return (code == this->code);
+}
+
+bool Pololu::Usb::Error::operator!=(Code code) const {
+  return (code != this->code);
+}
 
 int Pololu::Usb::Error::assert(int error) {
   if (error < LIBUSB_SUCCESS)

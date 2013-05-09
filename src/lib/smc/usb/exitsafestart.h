@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_EXITSAFESTART_H
 #define POLOLU_SMC_USB_EXITSAFESTART_H
 
-/** \file exitsafestart.h
-  * \brief Simple motor controller exit safe start request (USB protocol)
+/** \brief Simple motor controller exit safe start request (USB protocol)
   */
 
 #include "usb/request.h"

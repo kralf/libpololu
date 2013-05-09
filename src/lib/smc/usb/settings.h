@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_SETTINGS_H
 #define POLOLU_SMC_USB_SETTINGS_H
 
-/** \file settings.h
-  * \brief Pololu simple motor controller settings (USB protocol)
+/** \brief Pololu simple motor controller settings (USB protocol)
   */
 
 #include <map>

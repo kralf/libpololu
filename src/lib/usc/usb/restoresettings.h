@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_RESTORESETTINGS_H
 #define POLOLU_USC_USB_RESTORESETTINGS_H
 
-/** \file restoreconfiguration.h
-  * \brief USB servo controller restore settings request (USB protocol)
+/** \brief USB servo controller restore settings request (USB protocol)
   */
 
 #include "usb/request.h"

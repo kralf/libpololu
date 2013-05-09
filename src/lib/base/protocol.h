@@ -21,8 +21,7 @@
 #ifndef POLOLU_PROTOCOL_H
 #define POLOLU_PROTOCOL_H
 
-/** \file protocol.h
-  * \brief Abstract Pololu communication protocol
+/** \brief Abstract Pololu communication protocol
   */
 
 #include "base/object.h"

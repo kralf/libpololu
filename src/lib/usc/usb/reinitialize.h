@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_REINITIALIZE_H
 #define POLOLU_USC_USB_REINITIALIZE_H
 
-/** \file startbootloader.h
-  * \brief USB servo controller reinitialize request (USB protocol)
+/** \brief USB servo controller reinitialize request (USB protocol)
   */
 
 #include "usb/request.h"

@@ -21,8 +21,7 @@
 #ifndef POLOLU_SERIAL_REQUEST_H
 #define POLOLU_SERIAL_REQUEST_H
 
-/** \file request.h
-  * \brief Pololu serial request
+/** \brief Pololu serial request
   */
 
 #include "base/request.h"

@@ -1,3 +1,9 @@
+libpololu (0.1-17) lucid; urgency=low
+
+  * Added error code property to USB error class
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 09 May 2013 16:04:00 +0100
+
 libpololu (0.1-16) lucid; urgency=low
 
   * Added pkg-config support

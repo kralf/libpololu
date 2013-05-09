@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_GETRESETFLAGS_H
 #define POLOLU_SMC_USB_GETRESETFLAGS_H
 
-/** \file getresetflags.h
-  * \brief Simple motor controller get reset flags request (USB protocol)
+/** \brief Simple motor controller get reset flags request (USB protocol)
   */
 
 #include <map>

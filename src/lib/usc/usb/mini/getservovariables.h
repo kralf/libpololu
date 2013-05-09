@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_MINI_GETSERVOVARIABLES_H
 #define POLOLU_USC_USB_MINI_GETSERVOVARIABLES_H
 
-/** \file getservovariables.h
-  * \brief USB mini servo controller get servo variables request (USB protocol)
+/** \brief USB mini servo controller get servo variables request (USB protocol)
   */
 
 #include "usb/request.h"

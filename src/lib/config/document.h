@@ -21,8 +21,7 @@
 #ifndef POLOLU_CONFIG_DOCUMENT_H
 #define POLOLU_CONFIG_DOCUMENT_H
 
-/** \file document.h
-  * \brief Pololu configuration document class
+/** \brief Pololu configuration document class
   */
 
 #include "config/section.h"

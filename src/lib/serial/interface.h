@@ -21,8 +21,7 @@
 #ifndef POLOLU_SERIAL_INTERFACE_H
 #define POLOLU_SERIAL_INTERFACE_H
 
-/** \file interface.h
-  * \brief Pololu serial communication interface
+/** \brief Pololu serial communication interface
   */
 
 #include <map>

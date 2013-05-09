@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_DEVICE_H
 #define POLOLU_SMC_DEVICE_H
 
-/** \file device.h
-  * \brief Pololu simple motor controller (SMC) device
+/** \brief Pololu simple motor controller (SMC) device
   */
 
 #include <list>

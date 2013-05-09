@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_DEVICE_H
 #define POLOLU_USC_DEVICE_H
 
-/** \file device.h
-  * \brief Pololu USB servo controller (USC) device
+/** \brief Pololu USB servo controller (USC) device
   */
 
 #include <list>

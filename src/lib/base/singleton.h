@@ -21,8 +21,7 @@
 #ifndef POLOLU_SINGLETON_H
 #define POLOLU_SINGLETON_H
 
-/** \file singleton.h
-  * \brief Templated Pololu singleton
+/** \brief Templated Pololu singleton
   */
 
 #include "base/exception.h"

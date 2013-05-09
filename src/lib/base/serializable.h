@@ -21,8 +21,7 @@
 #ifndef POLOLU_SERIALIZABLE_H
 #define POLOLU_SERIALIZABLE_H
 
-/** \file serializable.h
-  * \brief Pololu serializable
+/** \brief Pololu serializable
   */
 
 #include <iostream>

@@ -21,8 +21,7 @@
 #ifndef POLOLU_USB_PROTOCOL_H
 #define POLOLU_USB_PROTOCOL_H
 
-/** \file protocol.h
-  * \brief Pololu USB protocol
+/** \brief Pololu USB protocol
   */
 
 #include <map>

@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_SETUSBKILL_H
 #define POLOLU_SMC_USB_SETUSBKILL_H
 
-/** \file setusbkill.h
-  * \brief Simple motor controller set USB kill request (USB protocol)
+/** \brief Simple motor controller set USB kill request (USB protocol)
   */
 
 #include "usb/request.h"

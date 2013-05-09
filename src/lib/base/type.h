@@ -21,8 +21,7 @@
 #ifndef POLOLU_TYPE_H
 #define POLOLU_TYPE_H
 
-/** \file type.h
-  * \brief Templated Pololu type
+/** \brief Templated Pololu type
   */
 
 #include <string>

@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_GETFIRMWAREVERSION_H
 #define POLOLU_USC_USB_GETFIRMWAREVERSION_H
 
-/** \file getfirmwareversion.h
-  * \brief USB servo controller get firmware version request (USB protocol)
+/** \brief USB servo controller get firmware version request (USB protocol)
   */
 
 #include "usb/request.h"

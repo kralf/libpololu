@@ -21,8 +21,7 @@
 #ifndef POLOLU_USB_ERROR_H
 #define POLOLU_USB_ERROR_H
 
-/** \file error.h
-  * \brief Pololu USB error
+/** \brief Pololu USB error
   */
 
 #include <map>
@@ -37,6 +36,37 @@ namespace Pololu {
     public:
       /** Types and non-static subclasses
         */
+      enum Code {
+        success,
+        io,
+        parameter,
+        access,
+        device,
+        entity,
+        busy,
+        timeout,
+        overflow,
+        pipe,
+        interrupt,
+        memory,
+        support,
+        other,
+        unknown
+      };
+
+      class Codes :
+        public std::map<int, Code> {
+      public:
+        /** Construct a Pololu USB error codes object
+          */
+        Codes();
+
+        /** Access the USB error code for the specified error
+          */
+        Code operator[](int error) const;
+        using std::map<int, Code>::operator[];
+      };
+
       class Descriptions :
         public std::map<int, std::string> {
       public:
@@ -53,10 +83,22 @@ namespace Pololu {
       /** Construct a Pololu USB error
         */
       Error(int error);
+      Error(const Error& error);
+
+      /** Pololu USB error assignments
+        */
+      Error& operator=(const Error& src);
+
+      /** Pololu USB error comparisons
+        */
+      bool operator==(Code code) const;
+      bool operator!=(Code code) const;
 
       /** Pololu USB error assertion
         */
       static int assert(int error);
+    protected:
+      Code code;
     };
   };
 };

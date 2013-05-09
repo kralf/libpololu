@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_WRITESCRIPT_H
 #define POLOLU_USC_USB_WRITESCRIPT_H
 
-/** \file writescript.h
-  * \brief USB servo controller write script request (USB protocol)
+/** \brief USB servo controller write script request (USB protocol)
   */
 
 #include "base/exception.h"

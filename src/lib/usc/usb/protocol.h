@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_PROTOCOL_H
 #define POLOLU_USC_USB_PROTOCOL_H
 
-/** \file protocol.h
-  * \brief USB protocol for the Pololu USB servo controller
+/** \brief USB protocol for the Pololu USB servo controller
   */
 
 #include <map>

@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_SETMODULATION_H
 #define POLOLU_USC_USB_SETMODULATION_H
 
-/** \file setmodulation.h
-  * \brief USB servo controller set modulation request (USB protocol)
+/** \brief USB servo controller set modulation request (USB protocol)
   */
 
 #include "usb/request.h"

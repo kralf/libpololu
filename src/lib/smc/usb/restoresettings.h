@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_RESTORESETTINGS_H
 #define POLOLU_SMC_USB_RESTORESETTINGS_H
 
-/** \file restoreconfiguration.h
-  * \brief Simple motor controller restore settings request (USB protocol)
+/** \brief Simple motor controller restore settings request (USB protocol)
   */
 
 #include "usb/request.h"

@@ -21,8 +21,7 @@
 #ifndef POLOLU_OBJECT_H
 #define POLOLU_OBJECT_H
 
-/** \file object.h
-  * \brief Pololu object
+/** \brief Pololu object
   */
 
 #include "base/pointer.h"

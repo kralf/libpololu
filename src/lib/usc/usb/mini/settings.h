@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_MINI_SETTINGS_H
 #define POLOLU_USC_USB_MINI_SETTINGS_H
 
-/** \file settings.h
-  * \brief Pololu USB mini servo controller settings (USB protocol)
+/** \brief Pololu USB mini servo controller settings (USB protocol)
   */
 
 #include "usc/usb/settings.h"

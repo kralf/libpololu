@@ -21,8 +21,7 @@
 #ifndef POLOLU_USB_INTERFACE_H
 #define POLOLU_USB_INTERFACE_H
 
-/** \file interface.h
-  * \brief Pololu USB communication interface
+/** \brief Pololu USB communication interface
   */
 
 #include <map>

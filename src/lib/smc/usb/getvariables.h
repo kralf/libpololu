@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_GETVARIABLES_H
 #define POLOLU_SMC_USB_GETVARIABLES_H
 
-/** \file getvariables.h
-  * \brief Simple motor controller get variables request (USB protocol)
+/** \brief Simple motor controller get variables request (USB protocol)
   */
 
 #include "usb/request.h"

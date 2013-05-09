@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_PROTOCOL_H
 #define POLOLU_SMC_USB_PROTOCOL_H
 
-/** \file protocol.h
-  * \brief USB protocol for the Pololu simple motor controller
+/** \brief USB protocol for the Pololu simple motor controller
   */
 
 #include "usb/protocol.h"

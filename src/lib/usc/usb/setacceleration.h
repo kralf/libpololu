@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_SETACCELERATION_H
 #define POLOLU_USC_USB_SETACCELERATION_H
 
-/** \file setacceleration.h
-  * \brief USB servo controller set acceleration request (USB protocol)
+/** \brief USB servo controller set acceleration request (USB protocol)
   */
 
 #include "usb/request.h"

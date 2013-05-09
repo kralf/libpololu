@@ -21,8 +21,7 @@
 #ifndef POLOLU_USB_CONTEXT_H
 #define POLOLU_USB_CONTEXT_H
 
-/** \file context.h
-  * \brief Pololu USB communication context
+/** \brief Pololu USB communication context
   */
 
 #include "base/context.h"

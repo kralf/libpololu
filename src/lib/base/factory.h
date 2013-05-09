@@ -21,8 +21,7 @@
 #ifndef POLOLU_FACTORY_H
 #define POLOLU_FACTORY_H
 
-/** \file factory.h
-  * \brief Templated Pololu factory
+/** \brief Templated Pololu factory
   */
 
 #include <map>

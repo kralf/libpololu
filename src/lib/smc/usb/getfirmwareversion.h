@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_GETFIRMWAREVERSION_H
 #define POLOLU_SMC_USB_GETFIRMWAREVERSION_H
 
-/** \file getfirmwareversion.h
-  * \brief Simple motor controller get firmware version request (USB protocol)
+/** \brief Simple motor controller get firmware version request (USB protocol)
   */
 
 #include "usb/request.h"

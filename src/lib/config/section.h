@@ -21,8 +21,7 @@
 #ifndef POLOLU_CONFIG_SECTION_H
 #define POLOLU_CONFIG_SECTION_H
 
-/** \file section.h
-  * \brief Pololu configuration section
+/** \brief Pololu configuration section
   */
 
 #include <iostream>

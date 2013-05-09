@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_VARIABLES_H
 #define POLOLU_SMC_USB_VARIABLES_H
 
-/** \file variables.h
-  * \brief Pololu simple motor controller variables (USB protocol)
+/** \brief Pololu simple motor controller variables (USB protocol)
   */
 
 #include <map>

@@ -21,8 +21,7 @@
 #ifndef POLOLU_REQUEST_H
 #define POLOLU_REQUEST_H
 
-/** \file request.h
-  * \brief Abstract Pololu communication request
+/** \brief Abstract Pololu communication request
   */
 
 #include <iostream>

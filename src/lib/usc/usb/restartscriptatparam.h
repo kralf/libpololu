@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_RESTARTSCRIPTATPARAM_H
 #define POLOLU_USC_USB_RESTARTSCRIPTATPARAM_H
 
-/** \file restartscriptatparam.h
-  * \brief USB servo controller restart script at request (USB protocol)
+/** \brief USB servo controller restart script at request (USB protocol)
   * This version of the request takes a parameter for the subroutine.
   */
 

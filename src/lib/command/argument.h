@@ -21,8 +21,7 @@
 #ifndef POLOLU_COMMAND_ARGUMENT_H
 #define POLOLU_COMMAND_ARGUMENT_H
 
-/** \file argument.h
-  * \brief Pololu commandline argument
+/** \brief Pololu commandline argument
   */
 
 #include "base/object.h"

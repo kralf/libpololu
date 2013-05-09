@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_SETBRAKE_H
 #define POLOLU_SMC_USB_SETBRAKE_H
 
-/** \file setbrake.h
-  * \brief Simple motor controller set brake request (USB protocol)
+/** \brief Simple motor controller set brake request (USB protocol)
   */
 
 #include "usb/request.h"

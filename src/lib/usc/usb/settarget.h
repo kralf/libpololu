@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_SETTARGET_H
 #define POLOLU_USC_USB_SETTARGET_H
 
-/** \file settarget.h
-  * \brief USB servo controller set target request (USB protocol)
+/** \brief USB servo controller set target request (USB protocol)
   */
 
 #include "usb/request.h"

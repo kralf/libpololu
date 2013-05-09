@@ -21,8 +21,7 @@
 #ifndef POLOLU_SCRIPT_SUBROUTINE_H
 #define POLOLU_SCRIPT_SUBROUTINE_H
 
-/** \file subroutine.h
-  * \brief Pololu scripting language subroutine
+/** \brief Pololu scripting language subroutine
   */
 
 #include <iostream>

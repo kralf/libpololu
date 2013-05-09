@@ -21,8 +21,7 @@
 #ifndef POLOLU_SCRIPT_BYTECODE_H
 #define POLOLU_SCRIPT_BYTECODE_H
 
-/** \file bytecode.h
-  * \brief Pololu scripting language bytecode
+/** \brief Pololu scripting language bytecode
   */
 
 #include <map>

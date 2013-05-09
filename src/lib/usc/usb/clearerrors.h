@@ -21,8 +21,7 @@
 #ifndef POLOLU_USC_USB_CLEARERRORS_H
 #define POLOLU_USC_USB_CLEARERRORS_H
 
-/** \file startbootloader.h
-  * \brief USB servo controller clear errors request (USB protocol)
+/** \brief USB servo controller clear errors request (USB protocol)
   */
 
 #include "usb/request.h"

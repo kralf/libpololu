@@ -21,8 +21,7 @@
 #ifndef POLOLU_MEMORY_H
 #define POLOLU_MEMORY_H
 
-/** \file memory.h
-  * \brief Pololu memory management
+/** \brief Pololu memory management
   */
 
 #include "exception.h"

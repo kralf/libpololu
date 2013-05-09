@@ -21,8 +21,7 @@
 #ifndef POLOLU_SMC_USB_SETMOTORLIMIT_H
 #define POLOLU_SMC_USB_SETMOTORLIMIT_H
 
-/** \file setmotorlimit.h
-  * \brief Simple motor controller set motor limit request (USB protocol)
+/** \brief Simple motor controller set motor limit request (USB protocol)
   */
 
 #include <map>
