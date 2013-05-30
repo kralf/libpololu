@@ -1,3 +1,10 @@
+libpololu (0.1-18) lucid; urgency=low
+
+  * Adapted build system configuration for cross-compilation using
+    the Naro toolchain and ReMakeRaspbian
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 30 May 2013 15:37:00 +0100
+
 libpololu (0.1-17) lucid; urgency=low
 
   * Added error code property to USB error class
