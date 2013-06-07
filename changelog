@@ -1,3 +1,9 @@
+libpololu (0.1-19) lucid; urgency=low
+
+  * Changed read()/write() return values to ssize_t in serial interface class
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 07 Jun 2013 08:14:00 +0100
+
 libpololu (0.1-18) lucid; urgency=low
 
   * Adapted build system configuration for cross-compilation using

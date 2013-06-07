@@ -259,7 +259,7 @@ void Pololu::Serial::Interface::send(const std::vector<unsigned char>&
     int i = 0;
 
     while (i < data.size()) {
-      size_t result;
+      ssize_t result;
       while ((result = ::write(handle, &data[i], data.size()-i)) == 0);
 
       if ((result < 0) && (errno != EWOULDBLOCK))
@@ -292,7 +292,7 @@ void Pololu::Serial::Interface::receive(std::vector<unsigned char>& data) {
       else if (error < 0)
         throw ReceiveError(address);
 
-      size_t result;
+      ssize_t result;
       result = ::read(handle, &data[i], data.size()-i);
 
       if ((result < 0) && (result != EWOULDBLOCK))
