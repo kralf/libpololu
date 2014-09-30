@@ -1,3 +1,9 @@
+libpololu (0.1-20) lucid; urgency=low
+
+  * Release distribution for Ubuntu Trusty Tahr
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 30 Sep 2014 12:51:00 +0100
+
 libpololu (0.1-19) lucid; urgency=low
 
   * Changed read()/write() return values to ssize_t in serial interface class
