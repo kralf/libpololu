@@ -1,3 +1,9 @@
+libpololu (0.1-21) lucid; urgency=low
+
+  * Fixed package dependencies (removed architecture matching regex)
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 22 Apr 2015 16:20:00 +0100
+
 libpololu (0.1-20) lucid; urgency=low
 
   * Release distribution for Ubuntu Trusty Tahr

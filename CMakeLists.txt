@@ -20,7 +20,7 @@ remake_doc(
 )
 
 remake_pack_deb(
-  DEPENDS libudev[0-1]*[:a-z]* libusb-1.0-0[:a-z]* libxml[+][+]2.6-2
+  DEPENDS libudev[0-1]* libusb-1.0-0 libxml[+][+]2.6-2
 )
 remake_pack_deb(
   COMPONENT utils
